@@ -36,16 +36,16 @@ public class BinParse
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
 			
-			for (int i = 0; i < BLOCK_OFFSET; i++)
-			{
-				int currOffset = i * 8;
-				Byte currByte = raf.readByte();
-				lb.add(currByte);
-				raf.seek(currOffset);
+			byte[] byteArray = new byte[8192];
+			raf.read(byteArray, 0, 8192);
+			
+			Record[] recordArray = new Record[512];    // create a record class that sorts the bits
+			for (int i = 0; i < recordArray.length; i++) {    // create a minheap class. cant use any of the functions for heap
+				recordArray[i] = //ith 16 bytes in byteArray 
 			}
-		}
+		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
         catch (FileNotFoundException e)
-		{
+		{    // minheap should by default store by records by size
         	System.err.println("File not found: " + e);
 		}
 		catch (IOException e)
