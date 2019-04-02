@@ -39,8 +39,12 @@ public class BinParse
 			byte[] byteArray = new byte[8192];
 			raf.read(byteArray, 0, 8192);
 			
-			Record[] recordArray = new Record[512];    // create a record class that sorts the bits
-			for (int i = 0; i < recordArray.length; i++) {    // create a minheap class. cant use any of the functions for heap
+			// create a record class that sorts the bits
+			Record[] recordArray = new Record[512];
+			
+			for (int i = 0; i < recordArray.length; i++) 
+			{    
+				// create a minheap class. cant use any of the functions for heap
 				recordArray[i] = //ith 16 bytes in byteArray 
 			}
 		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
@@ -49,7 +53,6 @@ public class BinParse
         	System.err.println("File not found: " + e);
 		}
 		catch (IOException e)
-		
 		{
 			System.err.println("Writing error: " + e);
 		}
