@@ -45,7 +45,9 @@ public class BinParse
 			for (int i = 0; i < recordArray.length; i++) 
 			{    
 				// create a minheap class. cant use any of the functions for heap
-				recordArray[i] = //ith 16 bytes in byteArray 
+				byte[] id = Arrays.copyOfRange(byteArray, i * 16, (i * 16) + 8);
+				byte[] key = Arrays.copyOfRange(byteArray, (i * 16) + 8, (i * 16) + 16);
+				recordArray[i] = new Record(id, key);  //ith 16 bytes in byteArray 
 			}
 		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
         catch (FileNotFoundException e)
