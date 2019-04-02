@@ -25,12 +25,13 @@ public class Externalsort
 	{
 	    BinParse p = new BinParse();
 	    
-	    List<Byte> inputBuffer = p.ParseAsBytes(args[0]);
+	    Record[] inputBuffer = p.ParseAsBytes(args[0]);
 	    
-	    for (int i = 0; i < inputBuffer.size(); i++)
+	    for (int i = 0; i < inputBuffer.length; i++)
 	    {
 	    	System.out.print(i + ":  ");
-	    	System.out.println(String.format("0x%02X", inputBuffer.get(i)));
+	    	System.out.print("This is ID: " + inputBuffer[i].getID() + " ");
+	    	System.out.println("This is key: " + inputBuffer[i].getKey());
 	    }
 	}
 

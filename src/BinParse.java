@@ -28,9 +28,11 @@ public class BinParse
 	 * @param fileName to name the binary file that needs to be read in
 	 * @return an array list of bytes.
 	 */
-	public List<Byte> ParseAsBytes(String fileName)
+	public Record[] ParseAsBytes(String fileName)
 	{
-		List<Byte> lb = new ArrayList<Byte>();
+//		List<Byte> lb = new ArrayList<Byte>();
+		// create a record class that sorts the bits
+		Record[] recordArray = new Record[512];
 		
 		try
 		{
@@ -38,9 +40,6 @@ public class BinParse
 			
 			byte[] byteArray = new byte[8192];
 			raf.read(byteArray, 0, 8192);
-			
-			// create a record class that sorts the bits
-			Record[] recordArray = new Record[512];
 			
 			for (int i = 0; i < recordArray.length; i++) 
 			{    
@@ -59,6 +58,6 @@ public class BinParse
 			System.err.println("Writing error: " + e);
 		}
 		
-		return lb;
+		return recordArray;
 	}
 }
