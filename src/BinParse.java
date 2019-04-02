@@ -32,20 +32,24 @@ public class BinParse
 	{
 //		List<Byte> lb = new ArrayList<Byte>();
 		// create a record class that sorts the bits
-		Record[] recordArray = new Record[512];
+		Record[] recordArray = new Record[NUM_RECORDS];
 		
 		try
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
 			
-			byte[] byteArray = new byte[8192];
-			raf.read(byteArray, 0, 8192);
+			byte[] byteArray = new byte[BLOCK_OFFSET];
+			raf.read(byteArray, 0, BLOCK_OFFSET);
 			
 			for (int i = 0; i < recordArray.length; i++) 
 			{    
 				// create a minheap class. cant use any of the functions for heap
-				byte[] id = Arrays.copyOfRange(byteArray, i * 16, (i * 16) + 8);
-				byte[] key = Arrays.copyOfRange(byteArray, (i * 16) + 8, (i * 16) + 16);
+				byte[] id = Arrays.copyOfRange(byteArray, 
+						i * NUM_BYTES_PER_RECORD, 
+						(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
+				byte[] key = Arrays.copyOfRange(byteArray, 
+						(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
+						(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
 				recordArray[i] = new Record(id, key);  //ith 16 bytes in byteArray 
 			}
 		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
