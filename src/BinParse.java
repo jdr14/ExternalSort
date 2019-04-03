@@ -30,7 +30,6 @@ public class BinParse
 	 */
 	public Record[] ParseAsBytes(String fileName)
 	{
-//		List<Byte> lb = new ArrayList<Byte>();
 		// create a record class that sorts the bits
 		Record[] recordArray = new Record[NUM_RECORDS];
 		
