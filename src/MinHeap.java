@@ -63,6 +63,16 @@ public class MinHeap {
 	}
 	
 	/**
+	 * 
+	 * @return reference to the smallest record in the heap 
+	 * (before it was removed)
+	 */
+	public Record removeSmallest()
+	{
+		
+	}
+	
+	/**
 	 * Switch the position of 2 places in the array
 	 * This method will serve as a helper for organizeMinHeap
 	 * @param posRec1 position of one record to be switched
