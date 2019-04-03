@@ -17,6 +17,15 @@ public class Record
     private double recordKey;
     
     /**
+     * Provide a default constructor
+     */
+    public Record()
+    {
+    	recordID = 0;
+    	recordKey = 0;
+    }
+    
+    /**
      * Constructor
      */
 	public Record(byte[] id, byte[] key)

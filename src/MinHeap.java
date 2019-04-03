@@ -69,7 +69,28 @@ public class MinHeap {
 	 */
 	public Record removeSmallest()
 	{
+		// Check that records actually exist in the heap
+		if (HEAP_SIZE == 0)
+		{
+			return new Record();
+		}
 		
+		// Save the removed record in a temp var. to be returned at the end
+		Record returnRecord = heap[0];
+		
+		// Overwrite the top (smallest) record with the last 
+		heap[0] = heap[HEAP_SIZE - 1];
+		
+		// Now that the last record is root, nullify the last record 
+		// and decrement the size to reflect the new min heap structure
+		heap[HEAP_SIZE - 1] = null;
+		HEAP_SIZE--;
+		
+		// Uphold the structural integrity of the min heap
+		siftDown();
+		
+		// Return the reference to the removed record for the caller
+		return returnRecord;
 	}
 	
 	/**
@@ -88,7 +109,7 @@ public class MinHeap {
 	/**
 	 * Helper method to keep the integrity of the min heap in tact.  
 	 */
-	private void organizeMinHeap()
+	private void siftDown()
 	{
 		// No need to continue if the heap size is only 1
 		// This should also not be called if the heap size is 0, but 
