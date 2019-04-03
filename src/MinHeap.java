@@ -105,9 +105,17 @@ public class MinHeap {
 		heap[posRec1] = heap[posRec2];
 		heap[posRec2] = temp;
 	}
+	
+	/**
+	 * Helper method to keep the integrity of the min heap in tact after insert
+	 */
+	private void siftUp()
+	{
+		
+	}
 
 	/**
-	 * Helper method to keep the integrity of the min heap in tact.  
+	 * Helper method to keep the integrity of the min heap in tact after remove
 	 */
 	private void siftDown()
 	{
