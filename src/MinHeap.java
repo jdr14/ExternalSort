@@ -12,7 +12,8 @@ public class MinHeap {
 	private int MAX_SIZE = 4096;
 	
 	/**
-	 * 
+	 * create the array called heap because our heap is based off of an
+	 * array based implementation
 	 */
 	private Record[] heap;
 	
@@ -43,15 +44,80 @@ public class MinHeap {
 	
 	/**
 	 * 
+	 * @return HEAP_SIZE an integer which keeps track of how many items are
+	 * currently stored in the min heap
+	 */
+	public int getHeapSize()
+	{
+		return HEAP_SIZE;
+	}
+	
+	/**
+	 * Get the left child index based on the parent index/position provided
+	 * @param parentPos as an integer needed to determine the child index
+	 * @return the left child index as an integer based on the 
+	 * parent integer provided.
+	 */
+	public int getleftChildIndex(int parentPos)
+	{
+		return (parentPos * 2) + 1;
+	}
+	
+	/**
+	 * Get the right child index based on the parent index/position provided
+	 * @param parentPos as an integer needed to determine the child index
+	 * @return the right child index as an integer based on the 
+	 * parent integer provided.
+	 */
+	public int getRightChildIndex(int parentPos)
+	{
+		return (parentPos * 2) + 2;
+	}
+	
+	/**
+	 * Return the parent index regardless of whether left or 
+	 * right child index was provided
+	 * @param childPos child position in the array provied as an integer
+	 * @return return the integer position of the parent
+	 */
+	public int getParentIndex(int childPos)
+	{
+		if (childPos % 2 == 0)  // Case right child
+		{
+			return (childPos / 2) - 1;
+		}
+		else  // Case left child
+		{
+			return (childPos / 2);
+		}
+	}
+	
+	/**
+	 * Method to retreive the record at the given position
+	 * @param pos position as an integer where the record is stored in array
+	 * @return the record requested from the given position
+	 */
+	public Record getRecord(int pos)
+	{
+		if (pos >= 0 && pos < HEAP_SIZE)
+		{
+			return heap[pos];
+		}
+		return new Record();
+	}
+	
+	/**
+	 * 
 	 * @param newEntry of type Record
 	 */
-	public boolean insert(Record newEntry)
+	public void insert(Record newEntry)
 	{
 		// Check that the heap array is within its size limits.
 		// assert HEAP_SIZE >= (MAX_SIZE - 1) : "Heap is full"
 		if (HEAP_SIZE >= (MAX_SIZE - 1))
 		{
-			return false;
+			System.out.println("Heap is full!");
+		    return;
 		}
 		// Insert the record entry at the next available empty slot in the heap
 		heap[HEAP_SIZE - 1] = newEntry;
@@ -59,7 +125,6 @@ public class MinHeap {
 		
 		// Keep the minHeap array ordered as a min heap
 		siftUp();
-		return true;
 	}
 	
 	/**
@@ -92,7 +157,7 @@ public class MinHeap {
 		// Return the reference to the removed record for the caller
 		return returnRecord;
 	}
-	
+
 	/**
 	 * Switch the position of 2 places in the array
 	 * This method will serve as a helper for organizeMinHeap
