@@ -58,7 +58,7 @@ public class MinHeap {
 		HEAP_SIZE++;
 		
 		// Keep the minHeap array ordered as a min heap
-		organizeMinHeap();
+		siftUp();
 		return true;
 	}
 	
@@ -111,8 +111,74 @@ public class MinHeap {
 	 */
 	private void siftUp()
 	{
+		// No need to continue if the heap size is only 1
+		// This should also not be called if the heap size is 0, but 
+		// include that case as well as a safety measure
+		if (HEAP_SIZE == 1 || HEAP_SIZE == 0)
+		{
+			// No further organization needed...
+			return;
+		}
 		
-	}
+		Record parent;
+		Record rightChild;
+		Record leftChild;
+		int childIndex = HEAP_SIZE - 1;
+		int parentIndex;
+		
+		while (true)
+		{
+			// If the childIndex is even, the child is right
+			boolean isRight = (childIndex % 2 == 0);
+			
+			if (isRight)  // Case right child
+			{
+				// Calculate index of parent accordingly
+				parentIndex = (childIndex / 2) - 1;
+				
+				// Set appropriate temp vars.
+				parent = heap[parentIndex];
+				rightChild = heap[childIndex];
+				
+				// Compare and swap if right child's key is less than parent's
+				if (rightChild.getKey() < parent.getKey())
+				{
+					swap(parentIndex, childIndex);
+				}
+				
+				// If the parent Index is not the root, iterate up through the
+				// the tree for more comparisons
+				if (parentIndex == 0)
+				{
+					return;
+				}
+				childIndex = parentIndex;
+			}
+			else  // Case left child
+			{
+				// calculate index of parent accordingly
+				parentIndex = (childIndex / 2);
+				
+				// Set appropriate temp vars.
+				parent = heap[parentIndex];
+				leftChild = heap[childIndex];
+				
+				// Compare and swap if right child's key is less than parent's
+				if (leftChild.getKey() < parent.getKey())
+				{
+					swap(parentIndex, childIndex);
+				}
+                
+				// If the parent Index is not the root, iterate up through the
+				// the tree for more comparisons
+				if (parentIndex == 0)
+				{
+					return;
+				}
+				childIndex = parentIndex;
+			}
+		}  // End While
+	}  // End siftUp
 
 	/**
 	 * Helper method to keep the integrity of the min heap in tact after remove
