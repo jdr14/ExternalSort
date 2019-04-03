@@ -58,7 +58,7 @@ public class MinHeap {
 		HEAP_SIZE++;
 		
 		// Keep the minHeap array ordered as a min heap
-		organizeMinHeap();
+//		organizeMinHeap();
 		return true;
 	}
 	
