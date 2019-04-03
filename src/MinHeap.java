@@ -31,17 +31,115 @@ public class MinHeap {
 	}
 	
 	/**
+	 * Overloaded constructor
+	 * @param r
+	 * @param size
+	 */
+	public MinHeap(Record[] r, int size)
+	{
+		heap = r;
+		HEAP_SIZE = size;
+	}
+	
+	/**
 	 * 
 	 * @param newEntry of type Record
 	 */
-	public void insert(Record newEntry)
+	public boolean insert(Record newEntry)
 	{
-		insertHelp(newEntry);
+		// Check that the heap array is within its size limits.
+		// assert HEAP_SIZE >= (MAX_SIZE - 1) : "Heap is full"
+		if (HEAP_SIZE >= (MAX_SIZE - 1))
+		{
+			return false;
+		}
+		// Insert the record entry at the next available empty slot in the heap
+		heap[HEAP_SIZE - 1] = newEntry;
 		HEAP_SIZE++;
+		
+		// Keep the minHeap array ordered as a min heap
+		organizeMinHeap();
+		return true;
 	}
 	
-	private void insertHelp(Record newEntry)
+	/**
+	 * Switch the position of 2 places in the array
+	 * This method will serve as a helper for organizeMinHeap
+	 * @param posRec1 position of one record to be switched
+	 * @param posRec2 position of second record to be switched with the first
+	 */
+	private void swap(int posRec1, int posRec2)
 	{
-		
+		Record temp = heap[posRec1];
+		heap[posRec1] = heap[posRec2];
+		heap[posRec2] = temp;
 	}
+
+	/**
+	 * Helper method to keep the integrity of the min heap in tact.  
+	 */
+	private void organizeMinHeap()
+	{
+		// No need to continue if the heap size is only 1
+		// This should also not be called if the heap size is 0, but 
+		// include that case as well as a safety measure
+		if (HEAP_SIZE == 1 || HEAP_SIZE == 0)
+		{
+			// No further organization needed...
+			return;
+		}
+		
+		// Create descriptive variables to set up the loop below
+		int leftChildIndex;
+		int rightChildIndex;
+		Record leftChild;
+		Record rightChild;
+		Record parent;
+		
+		// Iterate through the heap and make sure all nodes are where 
+		// they should be
+		for (int parentIndex = 0; parentIndex < HEAP_SIZE / 2; parentIndex++)
+		{
+			leftChildIndex = (2 * parentIndex) + 1;
+			rightChildIndex = (2 * parentIndex) + 2;
+			leftChild = heap[leftChildIndex];
+			rightChild = heap[rightChildIndex];
+			parent = heap[parentIndex];
+			
+			// If the left child is null, there is no more sorting 
+			// that can be done
+			if (leftChild == null)
+			{
+				return;
+			}
+			
+			// Case where right child is null, left is not, 
+			// and left is less than parent
+			if (rightChild == null)
+			{
+				// Before returning, check that the left child and parent 
+				// are ordered correctly
+				if (parent.getKey() > leftChild.getKey())
+				{
+					swap(parentIndex, leftChildIndex);
+				}
+				return;
+			}
+			
+			// Case right child is less than parent and less than left child
+			if (parent.getKey() > rightChild.getKey() &&
+					rightChild.getKey() < leftChild.getKey())
+			{
+				// Swap the right child with the parent
+				swap(parentIndex, rightChildIndex);
+			}
+			// Case left child is less than parent and less than right child
+			else if (parent.getKey() > leftChild.getKey() && 
+					leftChild.getKey() <= rightChild.getKey())
+			{
+				// Swap the left child with the parent
+				swap(parentIndex, leftChildIndex);
+			}
+		}  // End for
+	}  // End organizeMinHeap
 }
