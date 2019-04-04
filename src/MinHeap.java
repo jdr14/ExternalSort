@@ -2,7 +2,7 @@
  * 
  * @author Jovany Cabrera jovanyc4
  * @author Joey Destin Rodgers jdr14
- * @version 1.1.0
+ * @version 1.1.1
  *
  */
 public class MinHeap {
@@ -119,9 +119,9 @@ public class MinHeap {
 			System.out.println("Heap is full!");
 		    return;
 		}
+		HEAP_SIZE++;    // logical issue fix
 		// Insert the record entry at the next available empty slot in the heap
 		heap[HEAP_SIZE - 1] = newEntry;
-		HEAP_SIZE++;
 		
 		// Keep the minHeap array ordered as a min heap
 		siftUp();

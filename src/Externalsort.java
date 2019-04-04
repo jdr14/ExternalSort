@@ -44,13 +44,14 @@ public class Externalsort
 	{
 	    BinParse p = new BinParse();
 	    
-	    Record[] inputBuffer = p.ParseAsBytes(args[0]);
+	    MinHeap inputBuffer = p.ParseAsBytes(args[0]);
 	    
-	    for (int i = 0; i < inputBuffer.length; i++)
+	    for (int i = 0; i < inputBuffer.getHeapSize(); i++)
 	    {
+	    	Record temp = inputBuffer.getRecord(i);
 	    	System.out.print(i + ":  ");
-	    	System.out.print("This is ID: " + inputBuffer[i].getID() + " ");
-	    	System.out.println("This is key: " + inputBuffer[i].getKey());
+	    	System.out.print("This is ID: " + temp.getID() + " ");
+	    	System.out.println("This is key: " + temp.getKey());
 	    }
 	}
 

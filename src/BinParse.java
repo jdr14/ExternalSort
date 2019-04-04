@@ -28,10 +28,11 @@ public class BinParse
 	 * @param fileName to name the binary file that needs to be read in
 	 * @return an array list of bytes.
 	 */
-	public Record[] ParseAsBytes(String fileName)
+	public MinHeap ParseAsBytes(String fileName)
 	{
 		// create a record class that sorts the bits
 		Record[] recordArray = new Record[NUM_RECORDS];
+		MinHeap newHeap = new MinHeap();
 		
 		try
 		{
@@ -49,8 +50,9 @@ public class BinParse
 				byte[] key = Arrays.copyOfRange(byteArray, 
 						(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
 						(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
-				recordArray[i] = new Record(id, key);  //ith 16 bytes in byteArray 
+				/*recordArray[i] =*/ newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
 			}
+			raf.close();
 		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
         catch (FileNotFoundException e)
 		{    // minheap should by default store by records by size
@@ -61,6 +63,6 @@ public class BinParse
 			System.err.println("Writing error: " + e);
 		}
 		
-		return recordArray;
+		return newHeap;
 	}
 }
