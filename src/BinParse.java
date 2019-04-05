@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.nio.*;
 /**
  * Class to parse the binary input file
  * @author Joey Rodgers jdr14
@@ -87,17 +88,35 @@ public class BinParse
 	
 	/**
 	 * 
-	 * @param smallest
+	 * @param smallest is Record removed from heap
+	 * @throws IOException 
 	 */
-	private void addToOutput(Record smallest)
+	private void addToOutput(Record smallest) throws IOException
 	{
+		// creates byte arrays out the Record ID and Record Key
+		byte[] tempOut1 = new byte[8];
+		byte[] tempOut2 = new byte[8];
+		ByteBuffer.wrap(tempOut1).putDouble(smallest.getKey());
+		ByteBuffer.wrap(tempOut2).putLong(smallest.getID());
+		
+		// Combines both arrays to create one final array to add to outputBuffer
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		output.write(tempOut2);
+		output.write(tempOut1);
+		byte[] out = output.toByteArray();
+		
+		// if outputBuffer is full, write to run file and empty
 		if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
 		{
-			
+			OUTPUT_BUFFER_SIZE = 0;
 		}
-		else
+		else    // else add record information to outputBuffer
 		{
-//			outputBuffer[OUTPUT_BUFFER_SIZE] = smallest;
+			for (int i = 0; i < out.length; i++)
+			{
+				outputBuffer[OUTPUT_BUFFER_SIZE] = out[i];
+				OUTPUT_BUFFER_SIZE++;
+			}
 		}
 	}
 }
