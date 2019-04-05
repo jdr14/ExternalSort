@@ -40,8 +40,6 @@ public class BinParse
 			byte[] byteArray = new byte[BLOCK_OFFSET];
 			for (int e = 0; e < 8; e++)
 			{
-//				System.out.print("length: " + byteArray.length + " ");
-//				System.out.println("First parameter: " + (e * BLOCK_OFFSET) + " Second parameter: " + BLOCK_OFFSET);
 				raf.seek(e * BLOCK_OFFSET);
 				raf.read(byteArray, 0, BLOCK_OFFSET);
 				
