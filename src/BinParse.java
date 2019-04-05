@@ -30,6 +30,18 @@ public class BinParse
 	
 	private int OUTPUT_BUFFER_SIZE;
 	
+	FileOutputStream outFile;
+	
+	public BinParse()
+	{
+		try {
+			outFile = new FileOutputStream("run");
+		} 
+		catch (FileNotFoundException e) {
+			System.out.println("Error creating temporary run file: " + e.getMessage());
+		}
+	}
+	
 	/**
 	 * 
 	 * @param fileName to name the binary file that needs to be read in
@@ -119,15 +131,15 @@ public class BinParse
 		// if outputBuffer is full, write to run file and empty
 		if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
 		{
+			outFile.write(outputBuffer);
 			OUTPUT_BUFFER_SIZE = 0;
-		}
-		else    // else add record information to outputBuffer
+		}  // then add new record to output
+		
+		// add to output buffer regardless of size
+		for (int i = 0; i < out.length; i++)
 		{
-			for (int i = 0; i < out.length; i++)
-			{
-				outputBuffer[OUTPUT_BUFFER_SIZE] = out[i];
-				OUTPUT_BUFFER_SIZE++;
-			}
+			outputBuffer[OUTPUT_BUFFER_SIZE] = out[i];
+			OUTPUT_BUFFER_SIZE++;
 		}
 	}
 }
