@@ -53,6 +53,15 @@ public class MinHeap {
 	}
 	
 	/**
+	 * Checks if the min heap is full or not
+	 * @return true if the min heap is full
+	 */
+	public boolean isFull()
+	{
+		return (MAX_SIZE == HEAP_SIZE);
+	}
+	
+	/**
 	 * Get the left child index based on the parent index/position provided
 	 * @param parentPos as an integer needed to determine the child index
 	 * @return the left child index as an integer based on the 
