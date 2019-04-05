@@ -37,20 +37,24 @@ public class BinParse
 		try
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
-			
 			byte[] byteArray = new byte[BLOCK_OFFSET];
-			raf.read(byteArray, 0, BLOCK_OFFSET);
-			
-			for (int i = 0; i < recordArray.length; i++) 
-			{    
-				// create a minheap class. cant use any of the functions for heap
-				byte[] id = Arrays.copyOfRange(byteArray, 
-						i * NUM_BYTES_PER_RECORD, 
-						(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
-				byte[] key = Arrays.copyOfRange(byteArray, 
-						(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
-						(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
-				/*recordArray[i] =*/ newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
+			for (int e = 0; e < 8; e++)
+			{
+//				System.out.print("length: " + byteArray.length + " ");
+//				System.out.println("First parameter: " + (e * BLOCK_OFFSET) + " Second parameter: " + BLOCK_OFFSET);
+				raf.seek(e * BLOCK_OFFSET);
+				raf.read(byteArray, 0, BLOCK_OFFSET);
+				
+				for (int i = 0; i < recordArray.length; i++) 
+				{    
+					byte[] id = Arrays.copyOfRange(byteArray, 
+							i * NUM_BYTES_PER_RECORD, 
+							(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
+					byte[] key = Arrays.copyOfRange(byteArray, 
+							(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
+							(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+					/*recordArray[i] =*/ newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
+				}
 			}
 			raf.close();
 		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
