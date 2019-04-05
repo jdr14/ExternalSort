@@ -27,6 +27,8 @@ public class BinParse
 	
 	private byte[] outputBuffer = new byte[BLOCK_OFFSET];
 	
+	private int OUTPUT_BUFFER_SIZE;
+	
 	/**
 	 * 
 	 * @param fileName to name the binary file that needs to be read in
@@ -37,6 +39,7 @@ public class BinParse
 		// create a record class that sorts the bits
 		Record[] recordArray = new Record[NUM_RECORDS];
 		MinHeap newHeap = new MinHeap();
+		OUTPUT_BUFFER_SIZE = 0;
 		
 		try
 		{
@@ -61,6 +64,7 @@ public class BinParse
 					if (newHeap.isFull())
 					{
 						Record smallest = newHeap.removeSmallest();
+						addToOutput(smallest);
 						newHeap.insert(new Record(id, key));
 						
 					}
@@ -81,8 +85,19 @@ public class BinParse
 		return newHeap;
 	}
 	
+	/**
+	 * 
+	 * @param smallest
+	 */
 	private void addToOutput(Record smallest)
 	{
-		
+		if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
+		{
+			
+		}
+		else
+		{
+//			outputBuffer[OUTPUT_BUFFER_SIZE] = smallest;
+		}
 	}
 }
