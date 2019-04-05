@@ -35,7 +35,7 @@ public class BinParse
 	 * @param fileName to name the binary file that needs to be read in
 	 * @return an array list of bytes.
 	 */
-	public MinHeap ParseAsBytes(String fileName)
+	public void parse(String fileName)
 	{
 		// create a record class that sorts the bits
 		Record[] recordArray = new Record[NUM_RECORDS];
@@ -64,12 +64,14 @@ public class BinParse
 					// record to the output buffer
 					if (newHeap.isFull())
 					{
+						
+						
 						Record smallest = newHeap.removeSmallest();
-						addToOutput(smallest);
+						addToOutputBuffer(smallest);
 						newHeap.insert(new Record(id, key));
 						
 					}
-					/*recordArray[i] =*/ newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
+					newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
 				}
 			}
 			raf.close();
@@ -83,7 +85,16 @@ public class BinParse
 			System.err.println("Writing error: " + e);
 		}
 		
-		return newHeap;
+		
+		int i = 0;
+	    while (newHeap.getHeapSize() > 0)
+	    {
+	    	Record temp = newHeap.removeSmallest(); // inputBuffer.getRecord(i);
+	    	System.out.print(i + ":  ");
+	    	System.out.print("This is ID: " + temp.getID() + " ");
+	    	System.out.println("This is key: " + temp.getKey());
+	        i++;
+	    }
 	}
 	
 	/**
@@ -91,7 +102,7 @@ public class BinParse
 	 * @param smallest is Record removed from heap
 	 * @throws IOException 
 	 */
-	private void addToOutput(Record smallest) throws IOException
+	private void addToOutputBuffer(Record smallest) throws IOException
 	{
 		// creates byte arrays out the Record ID and Record Key
 		byte[] tempOut1 = new byte[8];
