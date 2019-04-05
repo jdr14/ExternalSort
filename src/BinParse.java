@@ -67,4 +67,9 @@ public class BinParse
 		
 		return newHeap;
 	}
+	
+	private void addToOutput(Record smallest)
+	{
+		
+	}
 }
