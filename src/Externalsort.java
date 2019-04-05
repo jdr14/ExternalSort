@@ -46,12 +46,15 @@ public class Externalsort
 	    
 	    MinHeap inputBuffer = p.ParseAsBytes(args[0]);
 	    
-	    for (int i = 0; i < inputBuffer.getHeapSize(); i++)
+	    // for (int i = 0; i < inputBuffer.getHeapSize(); i++)
+	    int i = 0;
+	    while (inputBuffer.getHeapSize() > 0)
 	    {
-	    	Record temp = inputBuffer.getRecord(i);
+	    	Record temp = inputBuffer.removeSmallest(); // inputBuffer.getRecord(i);
 	    	System.out.print(i + ":  ");
 	    	System.out.print("This is ID: " + temp.getID() + " ");
 	    	System.out.println("This is key: " + temp.getKey());
+	    	i++;
 	    }
 	}
 
