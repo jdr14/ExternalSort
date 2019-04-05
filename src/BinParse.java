@@ -23,6 +23,10 @@ public class BinParse
 	 */
 	private int BLOCK_OFFSET = NUM_RECORDS * NUM_BYTES_PER_RECORD;
 	
+	private byte[] inputBuffer = new byte[BLOCK_OFFSET];
+	
+	private byte[] outputBuffer = new byte[BLOCK_OFFSET];
+	
 	/**
 	 * 
 	 * @param fileName to name the binary file that needs to be read in
@@ -37,20 +41,29 @@ public class BinParse
 		try
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
-			byte[] byteArray = new byte[BLOCK_OFFSET];
+			
 			for (int e = 0; e < 8; e++)
 			{
 				raf.seek(e * BLOCK_OFFSET);
-				raf.read(byteArray, 0, BLOCK_OFFSET);
+				raf.read(inputBuffer, 0, BLOCK_OFFSET);
 				
 				for (int i = 0; i < recordArray.length; i++) 
 				{    
-					byte[] id = Arrays.copyOfRange(byteArray, 
+					byte[] id = Arrays.copyOfRange(inputBuffer, 
 							i * NUM_BYTES_PER_RECORD, 
 							(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
-					byte[] key = Arrays.copyOfRange(byteArray, 
+					byte[] key = Arrays.copyOfRange(inputBuffer, 
 							(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
 							(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+					
+					// If the working memory (min heap) is full, send the smallest
+					// record to the output buffer
+					if (newHeap.isFull())
+					{
+						Record smallest = newHeap.removeSmallest();
+						newHeap.insert(new Record(id, key));
+						
+					}
 					/*recordArray[i] =*/ newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
 				}
 			}
