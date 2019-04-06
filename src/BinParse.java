@@ -103,18 +103,12 @@ public class BinParse
 					// record to the output buffer
 					if (newHeap.isFull())
 					{
+						// if outputBuffer is full, write to run file and empty
 						if (isOutputFull())
 						{
-							outFile.write(outputBuffer);
-							OUTPUT_BUFFER_SIZE = 0;
-						}
-                        
-						// if outputBuffer is full, write to run file and empty
-						if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
-						{
                             dump();
-						}  
-						
+						}
+
 						Record smallest = newHeap.removeSmallest();
 						addToOutputBuffer(smallest);
 						newHeap.insert(new Record(id, key));
@@ -146,6 +140,10 @@ public class BinParse
 	    }
 	}
 	
+	/**
+	 * 
+	 * @throws IOException
+	 */
 	private void dump() throws IOException
 	{
 		long runFilePointer;
@@ -155,7 +153,7 @@ public class BinParse
 	
 	/**
 	 * 
-	 * @return
+	 * @return true if output buffer is full
 	 */
 	private boolean isOutputFull()
 	{
