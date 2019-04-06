@@ -22,12 +22,18 @@ public class MinHeap {
 	 * This should be greater than or equal to the number of items
 	 * actually stored in the heap
 	 */
-	private int numItems;
+	private int arraySize;
 	
 	/**
-	 * 
+	 * Keeps track of the number of items stored in the heap
 	 */
 	private int heapSize;
+	
+	/**
+	 * Keeps track of the number of items stored in the array, but outside 
+	 * the heap.
+	 */
+	private int numItemsOutsideHeap;
 	
 	/**
 	 * Default Constructor
@@ -35,7 +41,9 @@ public class MinHeap {
 	public MinHeap()
 	{
 		heap = new Record[maxSize];
+		arraySize = 0;
 		heapSize = 0;
+		numItemsOutsideHeap = 0;
 	}
 	
 	/**
@@ -43,10 +51,12 @@ public class MinHeap {
 	 * @param r
 	 * @param size
 	 */
-	public MinHeap(Record[] r, int size)
+	public MinHeap(Record[] r, int nItems, int hSize)
 	{
 		heap = r;
-		heapSize = size;
+		arraySize = nItems;
+		heapSize = hSize;
+		numItemsOutsideHeap = arraySize - heapSize;
 	}
 	
 	/**
@@ -60,12 +70,39 @@ public class MinHeap {
 	}
 	
 	/**
+	 * Return the number of items stored in the array
+	 * @return number of items currently stored in the array
+	 */
+	public int getArraySize()
+	{
+		return arraySize;
+	}
+	
+	/**
+	 * Return the number of records stored outside the heap.
+	 * @return number of records stored outside the heap as an int
+	 */
+	public int getNumItemsOutsideHeap()
+	{
+		return numItemsOutsideHeap;
+	}
+	
+	/**
 	 * Checks if the min heap is full or not
 	 * @return true if the min heap is full
 	 */
-	public boolean isFull()
+	public boolean heapIsFull()
 	{
-		return (maxSize == heapSize);
+		return (maxSize - numItemsOutsideHeap - 1 == heapSize);
+	}
+	
+	/**
+	 * Compare the number of items to the max size
+	 * @return true if the array is filled
+	 */
+	public boolean arrayIsFull()
+	{
+		return (maxSize - 1 == arraySize);
 	}
 	
 	/**
@@ -109,7 +146,7 @@ public class MinHeap {
 	}
 	
 	/**
-	 * Method to retreive the record at the given position
+	 * Method to retrieve the record at the given position
 	 * @param pos position as an integer where the record is stored in array
 	 * @return the record requested from the given position
 	 */
@@ -135,12 +172,36 @@ public class MinHeap {
 			System.out.println("Heap is full!");
 		    return;
 		}
-		heapSize++;    // logical issue fix
+		
+		if (arraySize >= (maxSize - 1))
+		{
+			System.out.println("Array is full!");
+		    return;
+		}
+		heapSize++; 
+		arraySize++;
+		
 		// Insert the record entry at the next available empty slot in the heap
 		heap[heapSize - 1] = newEntry;
 		
 		// Keep the minHeap array ordered as a min heap
 		siftUp();
+	}
+	
+	/**
+	 * Method to add items to the array, but not the heap
+	 * @param newEntry entry to be added to array but not heap
+	 */
+	public void addToArray(Record newEntry)
+	{
+		if (arraySize >= (maxSize - 1) || heapSize >= (maxSize -1))
+		{
+			System.out.println("Array is full!");
+			return;
+		}
+		// Does not increase heapSize
+		arraySize++;
+		heap[arraySize] = newEntry;
 	}
 	
 	/**
@@ -163,9 +224,11 @@ public class MinHeap {
 		heap[0] = heap[heapSize - 1];
 		
 		// Now that the last record is root, nullify the last record 
-		// and decrement the size to reflect the new min heap structure
+		// and decrement the array and heap size to reflect the new 
+		// min heap structure
 		heap[heapSize - 1] = null;
 		heapSize--;
+		arraySize--;
 		
 		// Uphold the structural integrity of the min heap
 		siftDown();
