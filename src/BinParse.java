@@ -30,14 +30,22 @@ public class BinParse
 	
 	private int OUTPUT_BUFFER_SIZE;
 	
+	private List<Long> runFilePointers;
+	
 	FileOutputStream outFile;
+	
+	String runFileName;
 	
 	public BinParse()
 	{
-		try {
-			outFile = new FileOutputStream("run");
+		try 
+		{
+			runFileName = "run";
+			outFile = new FileOutputStream(runFileName);
+			runFilePointers = new ArrayList<Long>();
 		} 
-		catch (FileNotFoundException e) {
+		catch (FileNotFoundException e) 
+		{
 			System.out.println("Error creating temporary run file: " + e.getMessage());
 		}
 	}
@@ -61,6 +69,8 @@ public class BinParse
 			for (int e = 0; e < 8; e++)
 			{
 				raf.seek(e * BLOCK_OFFSET);
+				
+				// Input buffer is filled from byte file
 				raf.read(inputBuffer, 0, BLOCK_OFFSET);
 				
 				for (int i = 0; i < recordArray.length; i++) 
@@ -76,7 +86,12 @@ public class BinParse
 					// record to the output buffer
 					if (newHeap.isFull())
 					{
-						
+                        
+						// if outputBuffer is full, write to run file and empty
+						if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
+						{
+                            dump();
+						}  
 						
 						Record smallest = newHeap.removeSmallest();
 						addToOutputBuffer(smallest);
@@ -109,6 +124,13 @@ public class BinParse
 	    }
 	}
 	
+	private void dump() throws IOException
+	{
+		long runFilePointer;
+		outFile.write(outputBuffer);
+		OUTPUT_BUFFER_SIZE = 0;
+	}
+	
 	/**
 	 * 
 	 * @param smallest is Record removed from heap
@@ -127,13 +149,6 @@ public class BinParse
 		output.write(tempOut2);
 		output.write(tempOut1);
 		byte[] out = output.toByteArray();
-		
-		// if outputBuffer is full, write to run file and empty
-		if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
-		{
-			outFile.write(outputBuffer);
-			OUTPUT_BUFFER_SIZE = 0;
-		}  // then add new record to output
 		
 		// add to output buffer regardless of size
 		for (int i = 0; i < out.length; i++)

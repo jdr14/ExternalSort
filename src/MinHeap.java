@@ -9,7 +9,7 @@ public class MinHeap {
 	/**
 	 * maximum size of min heap
 	 */
-	private int MAX_SIZE = 4096;
+	private int maxSize = 4096;
 	
 	/**
 	 * create the array called heap because our heap is based off of an
@@ -18,17 +18,24 @@ public class MinHeap {
 	private Record[] heap;
 	
 	/**
-	 * Current size of heap
+	 * Current number of items stored in the array
+	 * This should be greater than or equal to the number of items
+	 * actually stored in the heap
 	 */
-	private int HEAP_SIZE;
+	private int numItems;
+	
+	/**
+	 * 
+	 */
+	private int heapSize;
 	
 	/**
 	 * Default Constructor
 	 */
 	public MinHeap()
 	{
-		heap = new Record[MAX_SIZE];
-		HEAP_SIZE = 0;
+		heap = new Record[maxSize];
+		heapSize = 0;
 	}
 	
 	/**
@@ -39,7 +46,7 @@ public class MinHeap {
 	public MinHeap(Record[] r, int size)
 	{
 		heap = r;
-		HEAP_SIZE = size;
+		heapSize = size;
 	}
 	
 	/**
@@ -49,7 +56,7 @@ public class MinHeap {
 	 */
 	public int getHeapSize()
 	{
-		return HEAP_SIZE;
+		return heapSize;
 	}
 	
 	/**
@@ -58,7 +65,7 @@ public class MinHeap {
 	 */
 	public boolean isFull()
 	{
-		return (MAX_SIZE == HEAP_SIZE);
+		return (maxSize == heapSize);
 	}
 	
 	/**
@@ -108,7 +115,7 @@ public class MinHeap {
 	 */
 	public Record getRecord(int pos)
 	{
-		if (pos >= 0 && pos < HEAP_SIZE)
+		if (pos >= 0 && pos < heapSize)
 		{
 			return heap[pos];
 		}
@@ -123,14 +130,14 @@ public class MinHeap {
 	{
 		// Check that the heap array is within its size limits.
 		// assert HEAP_SIZE >= (MAX_SIZE - 1) : "Heap is full"
-		if (HEAP_SIZE >= (MAX_SIZE - 1))
+		if (heapSize >= (maxSize - 1))
 		{
 			System.out.println("Heap is full!");
 		    return;
 		}
-		HEAP_SIZE++;    // logical issue fix
+		heapSize++;    // logical issue fix
 		// Insert the record entry at the next available empty slot in the heap
-		heap[HEAP_SIZE - 1] = newEntry;
+		heap[heapSize - 1] = newEntry;
 		
 		// Keep the minHeap array ordered as a min heap
 		siftUp();
@@ -144,7 +151,7 @@ public class MinHeap {
 	public Record removeSmallest()
 	{
 		// Check that records actually exist in the heap
-		if (HEAP_SIZE == 0)
+		if (heapSize == 0)
 		{
 			return new Record();
 		}
@@ -153,12 +160,12 @@ public class MinHeap {
 		Record returnRecord = heap[0];
 		
 		// Overwrite the top (smallest) record with the last 
-		heap[0] = heap[HEAP_SIZE - 1];
+		heap[0] = heap[heapSize - 1];
 		
 		// Now that the last record is root, nullify the last record 
 		// and decrement the size to reflect the new min heap structure
-		heap[HEAP_SIZE - 1] = null;
-		HEAP_SIZE--;
+		heap[heapSize - 1] = null;
+		heapSize--;
 		
 		// Uphold the structural integrity of the min heap
 		siftDown();
@@ -188,7 +195,7 @@ public class MinHeap {
 		// No need to continue if the heap size is only 1
 		// This should also not be called if the heap size is 0, but 
 		// include that case as well as a safety measure
-		if (HEAP_SIZE == 1 || HEAP_SIZE == 0)
+		if (heapSize == 1 || heapSize == 0)
 		{
 			// No further organization needed...
 			return;
@@ -197,7 +204,7 @@ public class MinHeap {
 		Record parent;
 		Record rightChild;
 		Record leftChild;
-		int childIndex = HEAP_SIZE - 1;
+		int childIndex = heapSize - 1;
 		int parentIndex;
 		
 		while (true)
@@ -262,7 +269,7 @@ public class MinHeap {
 		// No need to continue if the heap size is only 1
 		// This should also not be called if the heap size is 0, but 
 		// include that case as well as a safety measure
-		if (HEAP_SIZE == 1 || HEAP_SIZE == 0)
+		if (heapSize == 1 || heapSize == 0)
 		{
 			// No further organization needed...
 			return;
@@ -277,7 +284,7 @@ public class MinHeap {
 		
 		// Iterate through the heap and make sure all nodes are where 
 		// they should be
-		for (int parentIndex = 0; parentIndex < HEAP_SIZE / 2; parentIndex++)
+		for (int parentIndex = 0; parentIndex < heapSize / 2; parentIndex++)
 		{
 			leftChildIndex = (2 * parentIndex) + 1;
 			rightChildIndex = (2 * parentIndex) + 2;
