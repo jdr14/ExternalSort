@@ -54,7 +54,7 @@ public class Externalsort
 	    	System.out.print(i + ":  ");
 	    	System.out.print("This is ID: " + temp.getID() + " ");
 	    	System.out.println("This is key: " + temp.getKey());
-	        i++;
+	    	i++;
 	    }
 	}
 
