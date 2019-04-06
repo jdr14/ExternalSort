@@ -84,7 +84,7 @@ public class BinParse
 					
 					// If the working memory (min heap) is full, send the smallest
 					// record to the output buffer
-					if (newHeap.isFull())
+					if (newHeap.heapIsFull())
 					{
                         
 						// if outputBuffer is full, write to run file and empty
