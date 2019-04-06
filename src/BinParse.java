@@ -39,6 +39,9 @@ public class BinParse
 	 */
 	private int OUTPUT_BUFFER_SIZE;
 	
+	/**
+	 * List of index file pointers
+	 */
 	private List<Long> runFilePointers;
 	
 	/**
@@ -46,6 +49,9 @@ public class BinParse
 	 */
 	FileOutputStream outFile;
 	
+	/**
+	 * String used as the run file name
+	 */
 	String runFileName;
 	
 	/**
@@ -53,8 +59,19 @@ public class BinParse
 	 */
 	Record latestInOB;
 	
+	/**
+	 * Latest Record to be inserted into MinHeap
+	 */
+	Record insertToMinHeap;
+	
+	/**
+	 * Heap used throughout program
+	 */
+	MinHeap newHeap;
+	
 	public BinParse()
 	{
+		newHeap = new MinHeap();
 		try 
 		{
 			runFileName = "run";
@@ -76,7 +93,6 @@ public class BinParse
 	{
 		// create a record class that sorts the bits
 		Record[] recordArray = new Record[NUM_RECORDS];
-		MinHeap newHeap = new MinHeap();
 		OUTPUT_BUFFER_SIZE = 0;
 		
 		try
@@ -99,6 +115,9 @@ public class BinParse
 							(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
 							(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
 					
+					// Record to be inserted into minHeap
+					insertToMinHeap = new Record(id, key);
+					
 					// If the working memory (min heap) is full, send the smallest
 					// record to the output buffer
 					if (newHeap.isFull())
@@ -108,15 +127,26 @@ public class BinParse
 						{
                             dump();
 						}
-
+						
+						// remove root record from min heap and insert into 
 						Record smallest = newHeap.removeSmallest();
 						addToOutputBuffer(smallest);
-						newHeap.insert(new Record(id, key));
 						
 					}
-					newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
+					
+					// check if newest Record can be added to min heap
+					if (validAdditionToOB(insertToMinHeap))
+					{
+						newHeap.insert(insertToMinHeap);  //ith 16 bytes in byteArray	
+					}
+					else
+					{
+						// call function to change min heap
+					}
 				}
 			}
+			
+			// need to close Random Access File
 			raf.close();
 		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
         catch (FileNotFoundException e)
@@ -149,6 +179,8 @@ public class BinParse
 		long runFilePointer;
 		outFile.write(outputBuffer);
 		OUTPUT_BUFFER_SIZE = 0;
+		// if output buffer is empty, the latest in output buffer should be empty
+//		latestInOB = insertToMinHeap;
 	}
 	
 	/**
@@ -158,6 +190,16 @@ public class BinParse
 	private boolean isOutputFull()
 	{
 		return OUTPUT_BUFFER_SIZE == BLOCK_OFFSET;
+	}
+	
+	/**
+	 * 
+	 * @param newRecord of type Record to see if should be added to minHeap
+	 * @return true if add to minHeap, else false and reduce size
+	 */
+	private boolean validAdditionToOB(Record newRecord)
+	{
+		return newRecord.getKey() > latestInOB.getKey();
 	}
 	
 	/**
