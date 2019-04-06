@@ -31,14 +31,18 @@ public class Record
 	public Record(byte[] id, byte[] key)
 	{
 		// ID should be 8 bytes long
-		assert id.length != 8 : "Error in Record: "
-				+ "byte array for ID passed in not 8 bytes long.";
+		if(id.length != 8)
+		{
+			System.out.println("Error in Record: byte array for "
+					+ "ID passed in not 8 bytes long.");
+		}
 		// Key should be 8 bytes long
-		assert key.length != 8 : "Error in Record: "
+		assert key.length == 8 : "Error in Record: "
 				+ "byte array for key passed in not 8 bytes long.";
 		
 		// Convert the key and id buffers to double and long 
 		recordID = ByteBuffer.wrap(id).getLong();
+		//System.out.println(recordID);
 		recordKey = ByteBuffer.wrap(key).getDouble();
 	}
     
