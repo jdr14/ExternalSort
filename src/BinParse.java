@@ -24,13 +24,30 @@ public class BinParse
 	 */
 	private int BLOCK_OFFSET = NUM_RECORDS * NUM_BYTES_PER_RECORD;
 	
+	/**
+	 *  Input buffer needed in project spec
+	 */
 	private byte[] inputBuffer = new byte[BLOCK_OFFSET];
 	
+	/**
+	 * Output buffer needed in project spec
+	 */
 	private byte[] outputBuffer = new byte[BLOCK_OFFSET];
 	
+	/**
+	 * Current output buffer size
+	 */
 	private int OUTPUT_BUFFER_SIZE;
 	
+	/**
+	 * Output stream used to create run file
+	 */
 	FileOutputStream outFile;
+	
+	/**
+	 * Latest record inserted in output buffer
+	 */
+	Record latestInOB;
 	
 	public BinParse()
 	{
@@ -76,6 +93,11 @@ public class BinParse
 					// record to the output buffer
 					if (newHeap.isFull())
 					{
+						if (isOutputFull())
+						{
+							outFile.write(outputBuffer);
+							OUTPUT_BUFFER_SIZE = 0;
+						}
 						Record smallest = newHeap.removeSmallest();
 						addToOutputBuffer(smallest);
 						newHeap.insert(new Record(id, key));
@@ -100,11 +122,23 @@ public class BinParse
 	
 	/**
 	 * 
+	 * @return
+	 */
+	private boolean isOutputFull()
+	{
+		return OUTPUT_BUFFER_SIZE == BLOCK_OFFSET;
+	}
+	
+	/**
+	 * 
 	 * @param smallest is Record removed from heap
 	 * @throws IOException 
 	 */
 	private void addToOutputBuffer(Record smallest) throws IOException
 	{
+		// keep latest insert to output buffer record up to date
+		latestInOB = smallest;
+		
 		// creates byte arrays out the Record ID and Record Key
 		byte[] tempOut1 = new byte[8];
 		byte[] tempOut2 = new byte[8];
