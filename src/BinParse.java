@@ -39,10 +39,14 @@ public class BinParse
 	 */
 	private int OUTPUT_BUFFER_SIZE;
 	
+	private List<Long> runFilePointers;
+	
 	/**
 	 * Output stream used to create run file
 	 */
 	FileOutputStream outFile;
+	
+	String runFileName;
 	
 	/**
 	 * Latest record inserted in output buffer
@@ -51,10 +55,14 @@ public class BinParse
 	
 	public BinParse()
 	{
-		try {
-			outFile = new FileOutputStream("run");
+		try 
+		{
+			runFileName = "run";
+			outFile = new FileOutputStream(runFileName);
+			runFilePointers = new ArrayList<Long>();
 		} 
-		catch (FileNotFoundException e) {
+		catch (FileNotFoundException e) 
+		{
 			System.out.println("Error creating temporary run file: " + e.getMessage());
 		}
 	}
@@ -64,7 +72,7 @@ public class BinParse
 	 * @param fileName to name the binary file that needs to be read in
 	 * @return an array list of bytes.
 	 */
-	public MinHeap ParseAsBytes(String fileName)
+	public void parse(String fileName)
 	{
 		// create a record class that sorts the bits
 		Record[] recordArray = new Record[NUM_RECORDS];
@@ -78,6 +86,8 @@ public class BinParse
 			for (int e = 0; e < 8; e++)
 			{
 				raf.seek(e * BLOCK_OFFSET);
+				
+				// Input buffer is filled from byte file
 				raf.read(inputBuffer, 0, BLOCK_OFFSET);
 				
 				for (int i = 0; i < recordArray.length; i++) 
@@ -98,12 +108,19 @@ public class BinParse
 							outFile.write(outputBuffer);
 							OUTPUT_BUFFER_SIZE = 0;
 						}
+                        
+						// if outputBuffer is full, write to run file and empty
+						if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
+						{
+                            dump();
+						}  
+						
 						Record smallest = newHeap.removeSmallest();
 						addToOutputBuffer(smallest);
 						newHeap.insert(new Record(id, key));
 						
 					}
-					/*recordArray[i] =*/ newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
+					newHeap.insert(new Record(id, key));  //ith 16 bytes in byteArray 
 				}
 			}
 			raf.close();
@@ -117,7 +134,23 @@ public class BinParse
 			System.err.println("Writing error: " + e);
 		}
 		
-		return newHeap;
+		
+		int i = 0;
+	    while (newHeap.getHeapSize() > 0)
+	    {
+	    	Record temp = newHeap.removeSmallest(); // inputBuffer.getRecord(i);
+	    	System.out.print(i + ":  ");
+	    	System.out.print("This is ID: " + temp.getID() + " ");
+	    	System.out.println("This is key: " + temp.getKey());
+	        i++;
+	    }
+	}
+	
+	private void dump() throws IOException
+	{
+		long runFilePointer;
+		outFile.write(outputBuffer);
+		OUTPUT_BUFFER_SIZE = 0;
 	}
 	
 	/**
@@ -150,13 +183,6 @@ public class BinParse
 		output.write(tempOut2);
 		output.write(tempOut1);
 		byte[] out = output.toByteArray();
-		
-		// if outputBuffer is full, write to run file and empty
-		if (OUTPUT_BUFFER_SIZE == outputBuffer.length)
-		{
-			outFile.write(outputBuffer);
-			OUTPUT_BUFFER_SIZE = 0;
-		}  // then add new record to output
 		
 		// add to output buffer regardless of size
 		for (int i = 0; i < out.length; i++)
