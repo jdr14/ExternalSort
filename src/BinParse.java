@@ -47,12 +47,17 @@ public class BinParse
 	/**
 	 * Output stream used to create run file
 	 */
-	FileOutputStream outFile;
+	File outFile;
 	
 	/**
 	 * String used as the run file name
 	 */
 	String runFileName;
+	
+	/**
+	 * Uses file to give position in file
+	 */
+	RandomAccessFile runFile;
 	
 	/**
 	 * Latest record inserted in output buffer
@@ -71,18 +76,17 @@ public class BinParse
 	
 	public BinParse()
 	{
+		OUTPUT_BUFFER_SIZE = 0;
 		newHeap = new MinHeap();
-//		latestInOB.setKey(null);
-		try 
-		{
-			runFileName = "run";
-			outFile = new FileOutputStream(runFileName);
-			runFilePointers = new ArrayList<Long>();
-		} 
-		catch (FileNotFoundException e) 
-		{
-			System.out.println("Error creating temporary run file: " + e.getMessage());
+        runFileName = "run";
+		outFile = new File(runFileName);
+		try {
+			runFile = new RandomAccessFile(outFile, "rw");
+		} catch (FileNotFoundException e) {
+			System.out.println("Error with creation of run file: " 
+		        + e.getMessage());
 		}
+		runFilePointers = new ArrayList<Long>();
 	}
 	
 	/**
@@ -100,12 +104,17 @@ public class BinParse
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
 			
-			for (int e = 0; e < 8; e++)
+			for (int e = 0; e < 900009; e++)
 			{
 				raf.seek(e * BLOCK_OFFSET);
 				
 				// Input buffer is filled from byte file
-				raf.read(inputBuffer, 0, BLOCK_OFFSET);
+				if (raf.read(inputBuffer, 0, BLOCK_OFFSET) == -1)
+				{
+					System.out.println("enter the == -1 case");
+					System.out.println("This is pointerarraysize: " + runFilePointers.size());
+//					break;
+				}
 				
 				for (int i = 0; i < recordArray.length; i++) 
 				{    
@@ -121,8 +130,9 @@ public class BinParse
 					
 					// If the working memory (minHeap) is full, send the smallest
 					// record to the output buffer
-					if (newHeap.isFull())
+					if (newHeap.heapIsFull())
 					{
+						System.out.println("This is output full: " + isOutputFull() + "\n");
 						// if outputBuffer is full, write to run file and empty
 						if (isOutputFull())
 						{
@@ -143,32 +153,23 @@ public class BinParse
 					else
 					{
 						// call function to change minHeap
+						newHeap.addToArray(insertToMinHeap);
 					}
 				}
 			}
-			
 			// need to close Random Access File
 			raf.close();
-		}    // minheap size is 8 blocks so read in 8 blocks, put each in minHeap and then fill output buffer (size one block)
-        catch (FileNotFoundException e)
-		{    // minheap should by default store by records by size
-        	System.err.println("File not found: " + e);
 		}
-		catch (IOException e)
+        catch (FileNotFoundException err)
 		{
-			System.err.println("Writing error: " + e);
+        	System.err.println("File not found: " + err.getMessage());
 		}
-		
-		
-		int i = 0;
-	    while (newHeap.getHeapSize() > 0)
-	    {
-	    	Record temp = newHeap.removeSmallest(); // inputBuffer.getRecord(i);
-	    	System.out.print(i + ":  ");
-	    	System.out.print("This is ID: " + temp.getID() + " ");
-	    	System.out.println("This is key: " + temp.getKey());
-	        i++;
-	    }
+		catch (IOException err)
+		{
+			System.out.println("enter the error catch");
+			System.out.println("This is pointerarraysize: " + runFilePointers.size());
+			return;
+		}
 	}
 	
 	/**
@@ -177,9 +178,10 @@ public class BinParse
 	 */
 	private void dump() throws IOException
 	{
-		long runFilePointer;
-		outFile.write(outputBuffer);
-		
+		System.out.println("Enter dump function");
+		runFile.write(outputBuffer);
+		long runFilePointer = runFile.getFilePointer();
+		runFilePointers.add(runFilePointer);
 		// reset output buffer size
 		OUTPUT_BUFFER_SIZE = 0;
 		
@@ -193,6 +195,8 @@ public class BinParse
 	 */
 	private boolean isOutputFull()
 	{
+		System.out.println("This is outputbuffersize: " + OUTPUT_BUFFER_SIZE);
+		System.out.println("This is block offset: " + BLOCK_OFFSET);
 		return OUTPUT_BUFFER_SIZE == BLOCK_OFFSET;
 	}
 	
