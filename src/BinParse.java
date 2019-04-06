@@ -72,6 +72,7 @@ public class BinParse
 	public BinParse()
 	{
 		newHeap = new MinHeap();
+//		latestInOB.setKey(null);
 		try 
 		{
 			runFileName = "run";
@@ -118,7 +119,7 @@ public class BinParse
 					// Record to be inserted into minHeap
 					insertToMinHeap = new Record(id, key);
 					
-					// If the working memory (min heap) is full, send the smallest
+					// If the working memory (minHeap) is full, send the smallest
 					// record to the output buffer
 					if (newHeap.isFull())
 					{
@@ -128,27 +129,27 @@ public class BinParse
                             dump();
 						}
 						
-						// remove root record from min heap and insert into 
+						// remove root and insert to output buffer
 						Record smallest = newHeap.removeSmallest();
 						addToOutputBuffer(smallest);
 						
 					}
 					
-					// check if newest Record can be added to min heap
+					// check if newest Record can be added to minHeap
 					if (validAdditionToOB(insertToMinHeap))
 					{
 						newHeap.insert(insertToMinHeap);  //ith 16 bytes in byteArray	
 					}
 					else
 					{
-						// call function to change min heap
+						// call function to change minHeap
 					}
 				}
 			}
 			
 			// need to close Random Access File
 			raf.close();
-		}    // minheap size is 8 blocks so read in 8 blocks, put each in minheap and then fill output buffer (size one block)
+		}    // minheap size is 8 blocks so read in 8 blocks, put each in minHeap and then fill output buffer (size one block)
         catch (FileNotFoundException e)
 		{    // minheap should by default store by records by size
         	System.err.println("File not found: " + e);
@@ -178,9 +179,12 @@ public class BinParse
 	{
 		long runFilePointer;
 		outFile.write(outputBuffer);
+		
+		// reset output buffer size
 		OUTPUT_BUFFER_SIZE = 0;
-		// if output buffer is empty, the latest in output buffer should be empty
-//		latestInOB = insertToMinHeap;
+		
+		// if output buffer is empty, reset latest in output buffer variable
+		latestInOB = null;
 	}
 	
 	/**
@@ -199,6 +203,12 @@ public class BinParse
 	 */
 	private boolean validAdditionToOB(Record newRecord)
 	{
+		// case where output buffer is empty
+		if (latestInOB == null)
+		{
+			return true;
+		}
+		
 		return newRecord.getKey() > latestInOB.getKey();
 	}
 	
