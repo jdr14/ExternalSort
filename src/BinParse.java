@@ -74,12 +74,12 @@ public class BinParse
 	 */
 	MinHeap newHeap;
 	
-	private boolean EndOfRun;
+	private boolean StartOfRun;
 	
 	public BinParse()
 	{
 		OUTPUT_BUFFER_SIZE = 0;
-		EndOfRun = false;
+		StartOfRun = false;
 		newHeap = new MinHeap();
         runFileName = "run";
 		outFile = new File(runFileName);
@@ -132,37 +132,19 @@ public class BinParse
 					
 					// If the working memory (minHeap) is full, send the smallest
 					// record to the output buffer
-					if (newHeap.heapIsFull())
-					{
-						System.out.println("This is output full: " + isOutputFull() + "\n");
-						// if outputBuffer is full, write to run file and empty
-						if (isOutputFull())
-						{
-                            dump();
-						}
-						
-						// remove root and insert to output buffer
-						Record smallest = newHeap.removeSmallest();
-						addToOutputBuffer(smallest);
-					}
-					
-					// If the array is full, that indicates the end of a run
 					if (newHeap.arrayIsFull())
 					{
-						EndOfRun = true;
-						
+						arrayCheck();
 					}
 					
 					// check if newest Record can be added to minHeap
 					if (validAdditionToOB(insertToMinHeap))
 					{
-//						System.out.println("INSERT!!!!");
 						newHeap.insert(insertToMinHeap);  //ith 16 bytes in byteArray	
 					}
 					else
 					{
 						// call function to change minHeap
-						System.out.println("ADDTOARRAY!!!!");
 						newHeap.addToArray(insertToMinHeap);
 					}
 				}
@@ -182,21 +164,51 @@ public class BinParse
 	}
 	
 	/**
+	 * @throws IOException 
+	 * 
+	 */
+	private void arrayCheck() throws IOException {
+		// if true, add root to output buffer
+		if (newHeap.heapIsFull())
+		{
+			// check if output buffer is full before adding to it
+			if (isOutputFull())
+			{
+				// if full write to output file
+				dump();
+			}
+			
+			// remove root of heap and add to output buffer
+			addToOutputBuffer(newHeap.removeSmallest());
+		}
+		else if ((newHeap.getHeapSize() == 0) && (newHeap.arrayIsFull()))
+		{
+			// re-heap the array
+			
+			// flag that beginning of run
+			StartOfRun = true;
+		}
+	}
+	/**
 	 * 
 	 * @throws IOException
 	 */
 	private void dump() throws IOException
 	{
-		System.out.println("Enter dump function");
-		runFile.write(outputBuffer);
-		if (EndOfRun)
+		// if at beginning of run, get file pointer for merge sort
+		if (StartOfRun)
 		{
 			long runFilePointer = runFile.getFilePointer();
 			runFilePointers.add(runFilePointer);
+			// switch the flag back to false
+			StartOfRun = false;
 		}
+		
+		// write output buffer to run file
+		runFile.write(outputBuffer);
+		
 		// reset output buffer size
 		OUTPUT_BUFFER_SIZE = 0;
-		
 		// if output buffer is empty, reset latest in output buffer variable
 		latestInOB = null;
 	}
@@ -207,8 +219,6 @@ public class BinParse
 	 */
 	private boolean isOutputFull()
 	{
-		System.out.println("This is outputbuffersize: " + OUTPUT_BUFFER_SIZE);
-		System.out.println("This is block offset: " + BLOCK_OFFSET);
 		return OUTPUT_BUFFER_SIZE == BLOCK_OFFSET;
 	}
 	
@@ -222,7 +232,6 @@ public class BinParse
 		// case where output buffer is empty
 		if (latestInOB == null)
 		{
-			System.out.println("ENTER THE NULL CASE");
 			return true;
 		}
 		
