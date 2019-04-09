@@ -104,7 +104,7 @@ public class BinParse
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
 			
-			for (int e = 0; e < 900009; e++)
+			for (int e = 0; e < 50; e++)
 			{
 				raf.seek(e * BLOCK_OFFSET);
 				
@@ -112,9 +112,9 @@ public class BinParse
 				// Input buffer is filled from byte file
 				readResult = raf.read(inputBuffer, 0, BLOCK_OFFSET);
 				System.out.println("This is readResult: " + readResult);
-				System.out.println("enter the == -1 case");
-				System.out.println("This is pointerarraysize: " + runFilePointers.size());
-//					break;
+//				System.out.println("This is pointerarraysize: " + runFilePointers.size());
+				if(readResult == -1)
+					break;
 				
 				for (int i = 0; i < recordArray.length; i++) 
 				{    
@@ -148,11 +148,13 @@ public class BinParse
 					// check if newest Record can be added to minHeap
 					if (validAdditionToOB(insertToMinHeap))
 					{
+						System.out.println("INSERT!!!!");
 						newHeap.insert(insertToMinHeap);  //ith 16 bytes in byteArray	
 					}
 					else
 					{
 						// call function to change minHeap
+						System.out.println("ADDTOARRAY!!!!");
 						newHeap.addToArray(insertToMinHeap);
 					}
 				}
@@ -210,6 +212,7 @@ public class BinParse
 		// case where output buffer is empty
 		if (latestInOB == null)
 		{
+			System.out.println("ENTER THE NULL CASE");
 			return true;
 		}
 		
