@@ -169,7 +169,7 @@ public class MinHeap {
 		// assert HEAP_SIZE >= (MAX_SIZE - 1) : "Heap is full"
 		if (heapSize >= (maxSize - 1))
 		{
-			//System.out.println("Heap is full!");
+			System.out.println("Heap is full!");
 		    return;
 		}
 		
