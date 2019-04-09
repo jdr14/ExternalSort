@@ -74,9 +74,12 @@ public class BinParse
 	 */
 	MinHeap newHeap;
 	
+	private boolean EndOfRun;
+	
 	public BinParse()
 	{
 		OUTPUT_BUFFER_SIZE = 0;
+		EndOfRun = false;
 		newHeap = new MinHeap();
         runFileName = "run";
 		outFile = new File(runFileName);
@@ -104,7 +107,7 @@ public class BinParse
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
 			
-			for (int e = 0; e < 900009; e++)
+			for (int e = 0; e < 50; e++)
 			{
 				raf.seek(e * BLOCK_OFFSET);
 				
@@ -112,9 +115,8 @@ public class BinParse
 				// Input buffer is filled from byte file
 				readResult = raf.read(inputBuffer, 0, BLOCK_OFFSET);
 				System.out.println("This is readResult: " + readResult);
-				System.out.println("enter the == -1 case");
-				System.out.println("This is pointerarraysize: " + runFilePointers.size());
-//					break;
+				if(readResult == -1)
+					break;
 				
 				for (int i = 0; i < recordArray.length; i++) 
 				{    
@@ -142,23 +144,32 @@ public class BinParse
 						// remove root and insert to output buffer
 						Record smallest = newHeap.removeSmallest();
 						addToOutputBuffer(smallest);
+					}
+					
+					// If the array is full, that indicates the end of a run
+					if (newHeap.arrayIsFull())
+					{
+						EndOfRun = true;
 						
 					}
 					
 					// check if newest Record can be added to minHeap
 					if (validAdditionToOB(insertToMinHeap))
 					{
+//						System.out.println("INSERT!!!!");
 						newHeap.insert(insertToMinHeap);  //ith 16 bytes in byteArray	
 					}
 					else
 					{
 						// call function to change minHeap
+						System.out.println("ADDTOARRAY!!!!");
 						newHeap.addToArray(insertToMinHeap);
 					}
 				}
 			}
 			// need to close Random Access File
 			raf.close();
+			System.out.println("This is pointerarraysize: " + runFilePointers.size());
 		}
         catch (FileNotFoundException err)
 		{
@@ -166,8 +177,6 @@ public class BinParse
 		}
 		catch (IOException err)
 		{
-			System.out.println("enter the error catch");
-			System.out.println("This is pointerarraysize: " + runFilePointers.size());
 			return;
 		}
 	}
@@ -180,8 +189,11 @@ public class BinParse
 	{
 		System.out.println("Enter dump function");
 		runFile.write(outputBuffer);
-		long runFilePointer = runFile.getFilePointer();
-		runFilePointers.add(runFilePointer);
+		if (EndOfRun)
+		{
+			long runFilePointer = runFile.getFilePointer();
+			runFilePointers.add(runFilePointer);
+		}
 		// reset output buffer size
 		OUTPUT_BUFFER_SIZE = 0;
 		
@@ -210,6 +222,7 @@ public class BinParse
 		// case where output buffer is empty
 		if (latestInOB == null)
 		{
+			System.out.println("ENTER THE NULL CASE");
 			return true;
 		}
 		
