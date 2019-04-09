@@ -108,13 +108,13 @@ public class BinParse
 			{
 				raf.seek(e * BLOCK_OFFSET);
 				
+				int readResult = 11;
 				// Input buffer is filled from byte file
-				if (raf.read(inputBuffer, 0, BLOCK_OFFSET) == -1)
-				{
-					System.out.println("enter the == -1 case");
-					System.out.println("This is pointerarraysize: " + runFilePointers.size());
+				readResult = raf.read(inputBuffer, 0, BLOCK_OFFSET);
+				System.out.println("This is readResult: " + readResult);
+				System.out.println("enter the == -1 case");
+				System.out.println("This is pointerarraysize: " + runFilePointers.size());
 //					break;
-				}
 				
 				for (int i = 0; i < recordArray.length; i++) 
 				{    
