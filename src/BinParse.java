@@ -195,8 +195,11 @@ public class BinParse
 				dump();
 			}
 			
-			// remove root of heap and add to output buffer
-			addToOutputBuffer(newHeap.removeSmallest());
+//			if (newHeap.getRecord(0) == null)
+//			{
+				// remove root of heap and add to output buffer
+				addToOutputBuffer(newHeap.removeSmallest());
+//			}
 			System.out.println("This is size of heap: " + newHeap.getHeapSize());
 		}
 	}

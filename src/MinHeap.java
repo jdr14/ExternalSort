@@ -342,7 +342,8 @@ public class MinHeap {
 		}
 		*/
 		heapSize = arraySize;
-		for (int i = heapSize/2 - 1; i >= 0; i--)
+		int temp = maxSize - arraySize;
+		for (int i = temp/2 - 1; i >= 0; i--)
 		{
 			Record parent = heap[i];
 			Record leftChild = heap[2*i + 1];
