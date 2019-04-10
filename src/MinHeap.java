@@ -35,6 +35,12 @@ public class MinHeap {
 	 */
 	private int numItemsOutsideHeap;
 	
+	
+	public Record[] getArray()
+	{
+		return heap;
+	}
+	
 	/**
 	 * Default Constructor
 	 */
@@ -347,7 +353,6 @@ public class MinHeap {
 		for (int i = maxSize - arraySize; i < maxSize; i++)
 		{
 			heap[count] = heap[i];
-			System.out.println(count + " = " + heap[count].getKey() + " : " + heap[count].getID());
 			heap[i] = null;
 			count++;
 		}
