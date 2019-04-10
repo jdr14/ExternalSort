@@ -79,7 +79,7 @@ public class BinParse
 	public BinParse()
 	{
 		OUTPUT_BUFFER_SIZE = 0;
-		StartOfRun = false;
+		StartOfRun = true;
 		newHeap = new MinHeap();
         runFileName = "run";
 		outFile = new File(runFileName);
@@ -100,7 +100,6 @@ public class BinParse
 	public void parse(String fileName)
 	{
 		// create a record class that sorts the bits
-		Record[] recordArray = new Record[NUM_RECORDS];
 		OUTPUT_BUFFER_SIZE = 0;
 		
 		try
@@ -117,7 +116,7 @@ public class BinParse
 //				if((readResult == -1) && (newHeap.getHeapSize() == 0))
 //					return;
 				
-				for (int i = 0; i < recordArray.length; i++) 
+				for (int i = 0; i < NUM_RECORDS; i++) 
 				{    
 					byte[] id = Arrays.copyOfRange(inputBuffer, 
 							i * NUM_BYTES_PER_RECORD, 
@@ -151,10 +150,21 @@ public class BinParse
 				}
 				System.out.println("This is size of heap: " + newHeap.getHeapSize());
 			}
-			if (newHeap.getArraySize() != 0 )
+			// left over because past end of input
+			// output rest of min-heap
+			// re-heap rest of array and maybe assign new run?
+			emptyHeap();
+			System.out.println("This is the size of the array before check: " + newHeap.getArraySize());
+			if (newHeap.getArraySize() != 0)
 			{
-				System.out.println("Not empty");
+				StartOfRun = true;
+				System.out.println("Size of heap before heapify: " + newHeap.getHeapSize());
+				newHeap.minHeapify();
+				System.out.println("Size of heap after heapify: " + newHeap.getHeapSize());
+				emptyHeap();
 			}
+			
+			System.out.println("This is the size of the array after check: " + newHeap.getArraySize());
 			// need to close Random Access File
 			raf.close();
 			System.out.println("This is pointerarraysize: " + runFilePointers.size());
@@ -169,6 +179,26 @@ public class BinParse
 		}
 	}
 	
+	/**
+	 * @throws IOException 
+	 * 
+	 */
+	private void emptyHeap() throws IOException
+	{
+		while (newHeap.getHeapSize() != 0 )
+		{
+			// check if output buffer is full before adding to it
+			if (isOutputFull())
+			{
+				// if full write to output file
+				dump();
+			}
+			
+			// remove root of heap and add to output buffer
+			addToOutputBuffer(newHeap.removeSmallest());
+			System.out.println("This is size of heap: " + newHeap.getHeapSize());
+		}
+	}
 	/**
 	 * @throws IOException 
 	 * 
@@ -189,8 +219,8 @@ public class BinParse
 		}
 		else if ((newHeap.getHeapSize() == 0) && (newHeap.arrayIsFull()))
 		{
-			
 			// re-heap the array
+			newHeap.minHeapify();
 			
 			// flag that beginning of run
 			StartOfRun = true;
