@@ -353,7 +353,7 @@ public class MinHeap {
 			    rightChild = heap[2*i + 2];
 			}
 			
-			if (rightChild != null)
+			if (rightChild != null)  // Left child should not be null here
 			{
 				double leftKey = leftChild.getKey();
 				double rightKey = rightChild.getKey();
@@ -370,8 +370,9 @@ public class MinHeap {
 					swap(i, 2*i + 2);
 				}
 			}
-			else
+			else if (leftChild != null)  // and right is null
 			{
+				
 				double leftKey = leftChild.getKey();
 				double parentKey = parent.getKey();
 				//System.out.println("left key = " + leftKey);
