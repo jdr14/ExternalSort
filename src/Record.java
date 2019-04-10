@@ -28,50 +28,30 @@ public class Record
     /**
      * Constructor
      */
-	public Record(byte[] id, byte[] key)
+	public Record(long id, double key)
 	{
-		// ID should be 8 bytes long
-		if(id.length != 8)
-		{
-			System.out.println("Error in Record: byte array for "
-					+ "ID passed in not 8 bytes long.");
-		}
-		// Key should be 8 bytes long
-		assert key.length == 8 : "Error in Record: "
-				+ "byte array for key passed in not 8 bytes long.";
-		
-		// Convert the key and id buffers to double and long 
-		recordID = ByteBuffer.wrap(id).getLong();
-		//System.out.println(recordID);
-		recordKey = ByteBuffer.wrap(key).getDouble();
+		recordID = id;
+		recordKey = key;
 	}
     
 	/**
 	 * 
 	 * @param id as a byte array of length 8
 	 */
-	public void setID(byte[] id)
+	public void setID(long id)
 	{
-		// ID should be 8 bytes long
-		assert id.length != 8 : "Error in Record: "
-				+ "byte array for ID passed in not 8 bytes long.";
-		
 		// Convert the ID buffer to a long
-		recordID = ByteBuffer.wrap(id).getLong();
+		recordID = id;
 	}
 	
 	/**
 	 * 
 	 * @param key as a byte array of length 8
 	 */
-	public void setKey(byte[] key)
+	public void setKey(double key)
 	{
-		// Key should be 8 bytes long
-		assert key.length != 8 : "Error in Record: "
-				+ "byte array for key passed in not 8 bytes long.";
-		
 		// Convert the Key buffer to a double
-		recordKey = ByteBuffer.wrap(key).getDouble();
+		recordKey = key;
 	}
 	
 	/**
