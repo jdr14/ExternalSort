@@ -3,6 +3,7 @@ import java.nio.*;
  * 
  * @author Joey Rodgers jdr14
  * @author Jovany Cabrera jovanyc4
+ * @version 2.1
  */
 public class Record 
 {
@@ -27,6 +28,8 @@ public class Record
     
     /**
      * Constructor
+     * @param id provides record id as a long
+     * @param key provides record key value as a double
      */
 	public Record(long id, double key)
 	{
