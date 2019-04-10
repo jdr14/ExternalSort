@@ -97,7 +97,7 @@ public class BinParse
 	 * @param fileName to name the binary file that needs to be read in
 	 * @return an array list of bytes.
 	 */
-	public void parse(String fileName)
+	public MergeSort parse(String fileName)
 	{
 		// create a record class that sorts the bits
 		OUTPUT_BUFFER_SIZE = 0;
@@ -176,8 +176,9 @@ public class BinParse
 		}
 		catch (IOException err)
 		{
-			return;
+			System.out.println("IOException exception: " + err.getMessage());
 		}
+		return new MergeSort(newHeap);
 	}
 	
 	/**
@@ -308,6 +309,12 @@ public class BinParse
 		}
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 * @param key
+	 * @return
+	 */
 	public Record bytesToRecord(byte[] id, byte[] key)
 	{
 		// Convert the key and id buffers to double and long 
@@ -316,5 +323,41 @@ public class BinParse
 		double rkey = ByteBuffer.wrap(key).getDouble();
 		
 		return new Record(rid, rkey);
+	}
+	
+	/**
+	 * 
+	 * @return runFilePointer array
+	 */
+	public List<Long> getPointerList()
+	{
+		return runFilePointers;
+	}
+	
+	/**
+	 * 
+	 * @return runFile object
+	 */
+	public RandomAccessFile getRunFile()
+	{
+		return runFile;
+	}
+    
+	/**
+	 * 
+	 * @return input buffer
+	 */
+	public byte[] getInput()
+	{
+		return inputBuffer;
+	}
+	
+	/**
+	 * 
+	 * @return output buffer
+	 */
+	public byte[] getOutput()
+	{
+		return outputBuffer;
 	}
 }
