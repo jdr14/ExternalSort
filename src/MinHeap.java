@@ -94,7 +94,7 @@ public class MinHeap {
 	 */
 	public boolean heapIsFull()
 	{
-		return (maxSize - numItemsOutsideHeap - 1 == heapSize);
+		return (maxSize - numItemsOutsideHeap == heapSize);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class MinHeap {
 	 */
 	public boolean arrayIsFull()
 	{
-		return (maxSize - 1 == arraySize);
+		return (maxSize == arraySize);
 	}
 	
 	/**
@@ -168,13 +168,13 @@ public class MinHeap {
 	{
 		// Check that the heap array is within its size limits.
 		// assert HEAP_SIZE >= (MAX_SIZE - 1) : "Heap is full"
-		if (heapSize >= (maxSize - 1))
+		if (heapSize >= (maxSize))
 		{
 			System.out.println("Heap is full!");
 		    return;
 		}
 		
-		if (arraySize >= (maxSize - 1))
+		if (arraySize >= (maxSize))
 		{
 			System.out.println("Array is full in insert!");
 		    return;
@@ -195,7 +195,7 @@ public class MinHeap {
 	 */
 	public void addToArray(Record newEntry)
 	{
-		if (arraySize >= (maxSize - 1) || heapSize >= (maxSize -1))
+		if (arraySize >= (maxSize) || heapSize >= (maxSize))
 		{
 			System.out.println("Array is full in add to array!");
 			return;
@@ -205,8 +205,8 @@ public class MinHeap {
 		
 		// Should be inserted at heapSize + 1 or 
 		// arraySize - numItemsOutsideHeap
-		heap[arraySize - numItemsOutsideHeap] = newEntry;
-		
+//		heap[arraySize - numItemsOutsideHeap] = newEntry;
+		heap[heapSize + numItemsOutsideHeap] = newEntry;
 		numItemsOutsideHeap++;
 	}
 	
@@ -342,8 +342,7 @@ public class MinHeap {
 		}
 		*/
 		heapSize = arraySize;
-		int temp = maxSize - arraySize;
-		for (int i = temp/2 - 1; i >= 0; i--)
+		for (int i = (maxSize - arraySize)/2 - 1; i >= 0; i--)
 		{
 			Record parent = heap[i];
 			Record leftChild = heap[2*i + 1];
