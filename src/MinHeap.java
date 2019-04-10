@@ -347,7 +347,7 @@ public class MinHeap {
 		for (int i = maxSize - arraySize; i < maxSize; i++)
 		{
 			heap[count] = heap[i];
-			System.out.println(count + " = " + heap[count].getKey() + " : " + heap[count].getID());
+//			System.out.println(count + " = " + heap[count].getKey() + " : " + heap[count].getID());
 			heap[i] = null;
 			count++;
 		}

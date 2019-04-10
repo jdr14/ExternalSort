@@ -146,30 +146,29 @@ public class BinParse
 						// call function to change minHeap
 						newHeap.addToArray(insertToMinHeap);
 					}
-					System.out.println("This is i: " + i);
 				}
-				System.out.println("This is size of heap: " + newHeap.getHeapSize());
+//				System.out.println("This is size of heap: " + newHeap.getHeapSize());
 			}
 			// empty out heap if there is stuff after input ends
 			emptyHeap();
 			// output rest of min-heap
 			// re-heap rest of array and maybe assign new run?
-			System.out.println("This is the size of the array before check: " + newHeap.getArraySize());
+//			System.out.println("This is the size of the array before check: " + newHeap.getArraySize());
 			// if array has content, begin new run; heapify; and empty out heap again
 			if (newHeap.getArraySize() != 0)
 			{
 				StartOfRun = true;
-				System.out.println("Size of heap before heapify: " + newHeap.getHeapSize());
+//				System.out.println("Size of heap before heapify: " + newHeap.getHeapSize());
 				newHeap.minHeapify();
-				System.out.println("Size of heap after heapify: " + newHeap.getHeapSize());
-				System.out.println("Number of items outside heap: " + newHeap.getNumItemsOutsideHeap());
+//				System.out.println("Size of heap after heapify: " + newHeap.getHeapSize());
+//				System.out.println("Number of items outside heap: " + newHeap.getNumItemsOutsideHeap());
 				emptyHeap();
 			}
 			
-			System.out.println("This is the size of the array after check: " + newHeap.getArraySize());
+//			System.out.println("This is the size of the array after check: " + newHeap.getArraySize());
 			// need to close Random Access File
 			raf.close();
-			System.out.println("This is pointerarraysize: " + runFilePointers.size());
+//			System.out.println("This is pointerarraysize: " + runFilePointers.size());
 		}
         catch (FileNotFoundException err)
 		{
@@ -201,7 +200,7 @@ public class BinParse
 				// remove root of heap and add to output buffer
 				addToOutputBuffer(newHeap.removeSmallest());
 //			}
-			System.out.println("This is size of heap: " + newHeap.getHeapSize());
+//			System.out.println("This is size of heap: " + newHeap.getHeapSize());
 		}
 	}
 	/**
