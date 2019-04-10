@@ -40,39 +40,13 @@ public class ExternalSortTest extends TestCase
      */
     public void testRecord()
     {
-    	assertEquals(r.getID(), (long)0, 0);
-    	assertEquals(r.getKey(), (double)0, 0);
+    	// Test default constructor
+    	assertEquals(r.getID(), 0, 0);
+    	assertEquals(r.getKey(), 0, 0);
     	
-    	// Create a test ID (decimal value = 708222784)
-    	byte[] testID = new byte[8]; //{(byte)0x2, (byte)0xa, (byte)0x3, (byte)0x6, 
-    			//(byte)0x9, (byte)0xf, (byte)0x4, (byte)0x0};
-    	
-    	testID[0] = (byte)0x0;
-    	testID[1] = (byte)0x0;
-    	testID[2] = (byte)0x3;
-    	testID[3] = (byte)0x6;
-    	testID[4] = (byte)0x9;
-    	testID[5] = (byte)0xf;
-    	testID[6] = (byte)0x4;
-    	testID[7] = (byte)0x0;
-    	
-    	// Create a test key (decimal value = 2076342047)
-    	byte[] testKey = {(byte)0x7, (byte)0xb, (byte)0xc, (byte)0x2, 
-    			(byte)0x7, (byte)0x7, (byte)0x1, (byte)0xf};
-    	
-    	System.out.println("ID and key size = " + testID.length + "   " + testKey.length);
-    	
-    	/*r.setID(testID);
-    	assertEquals(r.getID(), (long)708222784);
-    	assertEquals(r.getKey(), (double)0);
-    	
-    	r.setKey(testKey);
-    	assertEquals(r.getID(), (long)708222784);
-    	assertEquals(r.getKey(), (double)2076342047);*/
-    	
-    	r = new Record(testKey, testID);
-    	assertEquals(r.getID(), (long)2076342047);
-    	//assertEquals(r.getKey(), (double)507512585856680207);
+    	r = new Record(7, 8.923);
+    	assertEquals(r.getID(), 7);
+    	assertEquals(r.getKey(), 8.923, 0.000);
     }
     
     /**
@@ -80,13 +54,42 @@ public class ExternalSortTest extends TestCase
      */
 	public void testMinHeap() 
 	{
+		// test default constructor
 		assertEquals(mh.getHeapSize(), 0);
 		assertEquals(mh.getArraySize(), 0);
 		assertEquals(mh.getNumItemsOutsideHeap(), 0);
 		
-		Record[] recArr = new Record[5];
-		//recArr[0] = 
-		//mh = new MinHeap(recArr, 3, 2);
+		// Create and populate the record array
+		Record[] recArr = new Record[3];
+		recArr[0] = new Record(7, 8.923);
+		recArr[1] = new Record();
+		recArr[2] = new Record(5, 9.62);
+		
+		mh.insert(new Record(7, 8.923));
+		mh.insert(new Record());
+		mh.insert(new Record(5, 9.62));
+		assertEquals(mh.getRecord(0).getID(), recArr[1].getID());
+		assertEquals(mh.getRecord(0).getKey(), recArr[1].getKey(), 0.000);
+		assertEquals(mh.getRecord(1).getID(), recArr[0].getID());
+		assertEquals(mh.getRecord(1).getKey(), recArr[0].getKey(), 0.000);
+		assertEquals(mh.getRecord(2).getID(), recArr[2].getID());
+		assertEquals(mh.getRecord(2).getKey(), recArr[2].getKey(), 0.000);
+		
+		// Create and populate the record array
+		//Record[] recArr = new Record[3];
+		recArr[0] = new Record(7, 8.923);
+		recArr[1] = new Record();
+		recArr[2] = new Record(5, 9.62);
+		
+		mh = new MinHeap(recArr, 3, 3);
+		assertEquals(mh.getHeapSize(), 3);
+		assertEquals(mh.getArraySize(), 3);
+		assertEquals(mh.getNumItemsOutsideHeap(), 0);
+		assertEquals(mh.getRecord(0).getID(), 0);
+		assertEquals(mh.getRecord(0).getKey(), 0, 0);
+		assertEquals(mh.getRecord(1).getID(), 7);
+		assertEquals(mh.getRecord(1).getKey(), 8.923, 0.000);
+		assertEquals(mh.getRecord(2).getID(), 5);
+		assertEquals(mh.getRecord(2).getKey(), 9.62, 0.00);
 	}
-
 }

@@ -57,6 +57,7 @@ public class MinHeap {
 		arraySize = nItems;
 		heapSize = hSize;
 		numItemsOutsideHeap = arraySize - heapSize;
+		minHeapify();
 	}
 	
 	/**
@@ -205,6 +206,8 @@ public class MinHeap {
 		// Should be inserted at heapSize + 1 or 
 		// arraySize - numItemsOutsideHeap
 		heap[arraySize - numItemsOutsideHeap] = newEntry;
+		
+		numItemsOutsideHeap++;
 	}
 	
 	/**
@@ -326,6 +329,66 @@ public class MinHeap {
 			}
 		}  // End While
 	}  // End siftUp
+	
+	public void minHeapify()
+	{
+		/*
+		for (int i = 0; i < arraySize; i++)
+		{
+			System.out.println(heap[i].getKey());
+		}
+		*/
+		for (int i = heapSize/2 - 1; i >= 0; i--)
+		{
+			Record parent = heap[i];
+			Record leftChild = heap[2*i + 1];
+			Record rightChild = null;
+			
+			if (heapSize % 2 != 0)  // odd 
+			{
+			    rightChild = heap[2*i + 2];
+			}
+			
+			if (rightChild != null)
+			{
+				double leftKey = leftChild.getKey();
+				double rightKey = rightChild.getKey();
+				double parentKey = parent.getKey();
+				System.out.println("left key = " + leftKey);
+				System.out.println("parent key = " + parentKey);
+				System.out.println("right key = " + rightKey);
+				
+				if (leftKey <= rightKey && leftKey < parentKey)
+				{
+					// Swap left with the parent (by index)
+					swap(i, 2*i + 1);
+				}
+				else if (rightKey < leftKey && rightKey < parentKey)
+				{
+				    // Swap right with the parent (by index)
+					swap(i, 2*i + 2);
+				}
+			}
+			else
+			{
+				double leftKey = leftChild.getKey();
+				double parentKey = parent.getKey();
+				System.out.println("left key = " + leftKey);
+				System.out.println("parent key = " + parentKey);
+				if (leftKey < parentKey)
+				{
+					// Swap left with the parent (by index)
+					swap(i, 2*i + 1);
+				}
+			}
+		}
+		/*
+		for (int i = 0; i < arraySize; i++)
+		{
+			System.out.println(heap[i].getKey());
+		}
+		*/
+	}
 
 	/**
 	 * Helper method to keep the integrity of the min heap in tact after remove

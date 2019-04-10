@@ -128,7 +128,7 @@ public class BinParse
 							(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
 					
 					// Record to be inserted into minHeap
-					insertToMinHeap = new Record(id, key);
+					insertToMinHeap = bytesToRecord(id, key);
 					
 					// If the working memory (minHeap) is full, send the smallest
 					// record to the output buffer
@@ -183,6 +183,7 @@ public class BinParse
 		}
 		else if ((newHeap.getHeapSize() == 0) && (newHeap.arrayIsFull()))
 		{
+			
 			// re-heap the array
 			
 			// flag that beginning of run
@@ -266,5 +267,15 @@ public class BinParse
 			outputBuffer[OUTPUT_BUFFER_SIZE] = out[i];
 			OUTPUT_BUFFER_SIZE++;
 		}
+	}
+	
+	public Record bytesToRecord(byte[] id, byte[] key)
+	{
+		// Convert the key and id buffers to double and long 
+		long rid = ByteBuffer.wrap(id).getLong();
+		//System.out.println(recordID);
+		double rkey = ByteBuffer.wrap(key).getDouble();
+		
+		return new Record(rid, rkey);
 	}
 }
