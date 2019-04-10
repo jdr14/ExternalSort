@@ -175,7 +175,7 @@ public class MinHeap {
 		
 		if (arraySize >= (maxSize - 1))
 		{
-			System.out.println("Array is full!");
+			System.out.println("Array is full in insert!");
 		    return;
 		}
 		heapSize++; 
@@ -196,7 +196,7 @@ public class MinHeap {
 	{
 		if (arraySize >= (maxSize - 1) || heapSize >= (maxSize -1))
 		{
-			//System.out.println("Array is full!");
+			System.out.println("Array is full in add to array!");
 			return;
 		}
 		// Does not increase heapSize
@@ -205,6 +205,8 @@ public class MinHeap {
 		// Should be inserted at heapSize + 1 or 
 		// arraySize - numItemsOutsideHeap
 		heap[arraySize - numItemsOutsideHeap] = newEntry;
+		
+		numItemsOutsideHeap++;
 	}
 	
 	/**

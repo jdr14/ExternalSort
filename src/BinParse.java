@@ -107,16 +107,15 @@ public class BinParse
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
 			
-			for (int e = 0; e < 50; e++)
+//			for (int e = 0; e < 22; e++)
+			while((raf.read(inputBuffer) != -1) /*&& (newHeap.getHeapSize() == 0)*/)
 			{
-				raf.seek(e * BLOCK_OFFSET);
+//				raf.seek(e * BLOCK_OFFSET);
 				
-				int readResult = 11;
 				// Input buffer is filled from byte file
-				readResult = raf.read(inputBuffer, 0, BLOCK_OFFSET);
-				System.out.println("This is readResult: " + readResult);
-				if(readResult == -1)
-					break;
+//				readResult = raf.read(inputBuffer, 0, BLOCK_OFFSET);
+//				if((readResult == -1) && (newHeap.getHeapSize() == 0))
+//					return;
 				
 				for (int i = 0; i < recordArray.length; i++) 
 				{    
@@ -132,6 +131,7 @@ public class BinParse
 					
 					// If the working memory (minHeap) is full, send the smallest
 					// record to the output buffer
+//					System.out.println("Output buffer size: " + OUTPUT_BUFFER_SIZE);
 					if (newHeap.arrayIsFull())
 					{
 						arrayCheck();
@@ -147,7 +147,13 @@ public class BinParse
 						// call function to change minHeap
 						newHeap.addToArray(insertToMinHeap);
 					}
+					System.out.println("This is i: " + i);
 				}
+				System.out.println("This is size of heap: " + newHeap.getHeapSize());
+			}
+			if (newHeap.getArraySize() != 0 )
+			{
+				System.out.println("Not empty");
 			}
 			// need to close Random Access File
 			raf.close();
@@ -234,7 +240,6 @@ public class BinParse
 		{
 			return true;
 		}
-		
 		return newRecord.getKey() > latestInOB.getKey();
 	}
 	
