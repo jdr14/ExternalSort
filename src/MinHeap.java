@@ -330,6 +330,9 @@ public class MinHeap {
 		}  // End While
 	}  // End siftUp
 	
+	/**
+	 * 
+	 */
 	public void minHeapify()
 	{
 		/*
@@ -338,6 +341,7 @@ public class MinHeap {
 			System.out.println(heap[i].getKey());
 		}
 		*/
+		heapSize = arraySize;
 		for (int i = heapSize/2 - 1; i >= 0; i--)
 		{
 			Record parent = heap[i];
@@ -354,10 +358,7 @@ public class MinHeap {
 				double leftKey = leftChild.getKey();
 				double rightKey = rightChild.getKey();
 				double parentKey = parent.getKey();
-				System.out.println("left key = " + leftKey);
-				System.out.println("parent key = " + parentKey);
-				System.out.println("right key = " + rightKey);
-				
+
 				if (leftKey <= rightKey && leftKey < parentKey)
 				{
 					// Swap left with the parent (by index)
@@ -373,8 +374,8 @@ public class MinHeap {
 			{
 				double leftKey = leftChild.getKey();
 				double parentKey = parent.getKey();
-				System.out.println("left key = " + leftKey);
-				System.out.println("parent key = " + parentKey);
+				//System.out.println("left key = " + leftKey);
+				//System.out.println("parent key = " + parentKey);
 				if (leftKey < parentKey)
 				{
 					// Swap left with the parent (by index)
