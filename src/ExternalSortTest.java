@@ -13,15 +13,6 @@ import student.TestCase;
  */
 public class ExternalSortTest extends TestCase 
 {
-	/**
-	 * Create a minheap variable
-	 */
-    private MinHeap mh;
-	
-    /**
-     * Create a record variable
-     */
-    private Record r;
     
     @Override
     /**
@@ -31,8 +22,8 @@ public class ExternalSortTest extends TestCase
     public void setUp() 
     {   
     	// Create a new instance of a minheap
-        mh = new MinHeap();
-        r = new Record();
+        //mh = new MinHeap();
+        //r = new Record();
     }
     
     /**
@@ -40,6 +31,7 @@ public class ExternalSortTest extends TestCase
      */
     public void testRecord()
     {
+    	Record r = new Record();
     	// Test default constructor
     	assertEquals(r.getID(), 0, 0);
     	assertEquals(r.getKey(), 0, 0);
@@ -54,6 +46,8 @@ public class ExternalSortTest extends TestCase
      */
 	public void testMinHeap() 
 	{
+		MinHeap mh = new MinHeap();
+		
 		// test default constructor
 		assertEquals(mh.getHeapSize(), 0);
 		assertEquals(mh.getArraySize(), 0);
@@ -91,5 +85,6 @@ public class ExternalSortTest extends TestCase
 		assertEquals(mh.getRecord(1).getKey(), 8.923, 0.000);
 		assertEquals(mh.getRecord(2).getID(), 5);
 		assertEquals(mh.getRecord(2).getKey(), 9.62, 0.00);
+		
 	}
 }
