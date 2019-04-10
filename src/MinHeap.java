@@ -205,9 +205,9 @@ public class MinHeap {
 		
 		// Should be inserted at heapSize + 1 or 
 		// arraySize - numItemsOutsideHeap
-//		heap[arraySize - numItemsOutsideHeap] = newEntry;
-		heap[heapSize + numItemsOutsideHeap] = newEntry;
 		numItemsOutsideHeap++;
+		heap[arraySize - numItemsOutsideHeap] = newEntry;
+		// heap[heapSize + numItemsOutsideHeap] = newEntry;	
 	}
 	
 	/**
@@ -341,8 +341,19 @@ public class MinHeap {
 			System.out.println(heap[i].getKey());
 		}
 		*/
+		
+		// Shift the heap to the front of the array
+		int count = 0;
+		for (int i = maxSize - arraySize; i < maxSize; i++)
+		{
+			heap[count] = heap[i];
+			System.out.println(count + " = " + heap[count].getKey() + " : " + heap[count].getID());
+			heap[i] = null;
+			count++;
+		}
+		
 		heapSize = arraySize;
-		for (int i = (maxSize - arraySize)/2 - 1; i >= 0; i--)
+		for (int i = (arraySize/2) - 1; i >= 0; i--)
 		{
 			Record parent = heap[i];
 			Record leftChild = heap[2*i + 1];
