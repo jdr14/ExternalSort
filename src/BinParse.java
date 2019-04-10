@@ -12,32 +12,32 @@ public class BinParse
 	/**
 	 * defines the number of records in a block
 	 */
-	private int NUM_RECORDS = 512;
+	private int numRecords = 512;
 	
 	/**
 	 * defines the number of bytes in a record
 	 */
-	private int NUM_BYTES_PER_RECORD = 16;
+	private int numBytesPerRecord = 16;
 	
 	/**
 	 * to determine the length of the block
 	 */
-	private int BLOCK_OFFSET = NUM_RECORDS * NUM_BYTES_PER_RECORD;
+	private int blockOffset = numRecords * numBytesPerRecord;
 	
 	/**
 	 *  Input buffer needed in project spec
 	 */
-	private byte[] inputBuffer = new byte[BLOCK_OFFSET];
+	private byte[] inputBuffer = new byte[blockOffset];
 	
 	/**
 	 * Output buffer needed in project spec
 	 */
-	private byte[] outputBuffer = new byte[BLOCK_OFFSET];
+	private byte[] outputBuffer = new byte[blockOffset];
 	
 	/**
 	 * Current output buffer size
 	 */
-	private int OUTPUT_BUFFER_SIZE;
+	private int outputBufferSize;
 	
 	/**
 	 * List of index file pointers
@@ -78,7 +78,7 @@ public class BinParse
 	
 	public BinParse()
 	{
-		OUTPUT_BUFFER_SIZE = 0;
+		outputBufferSize = 0;
 		StartOfRun = true;
 		newHeap = new MinHeap();
         runFileName = "run";
@@ -100,7 +100,7 @@ public class BinParse
 	public void parse(String fileName)
 	{
 		// create a record class that sorts the bits
-		OUTPUT_BUFFER_SIZE = 0;
+		outputBufferSize = 0;
 		
 		try
 		{
@@ -116,14 +116,14 @@ public class BinParse
 //				if((readResult == -1) && (newHeap.getHeapSize() == 0))
 //					return;
 				
-				for (int i = 0; i < NUM_RECORDS; i++) 
+				for (int i = 0; i < numRecords; i++) 
 				{    
 					byte[] id = Arrays.copyOfRange(inputBuffer, 
-							i * NUM_BYTES_PER_RECORD, 
-							(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
+							i * numBytesPerRecord, 
+							(i * numBytesPerRecord) + (numBytesPerRecord / 2));
 					byte[] key = Arrays.copyOfRange(inputBuffer, 
-							(i * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
-							(i * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+							(i * numBytesPerRecord) + (numBytesPerRecord / 2), 
+							(i * numBytesPerRecord) + numBytesPerRecord);
 					
 					// Record to be inserted into minHeap
 					insertToMinHeap = bytesToRecord(id, key);
@@ -246,7 +246,7 @@ public class BinParse
 		runFile.write(outputBuffer);
 		
 		// reset output buffer size
-		OUTPUT_BUFFER_SIZE = 0;
+		outputBufferSize = 0;
 		// if output buffer is empty, reset latest in output buffer variable
 		latestInOB = null;
 	}
@@ -257,7 +257,7 @@ public class BinParse
 	 */
 	private boolean isOutputFull()
 	{
-		return OUTPUT_BUFFER_SIZE == BLOCK_OFFSET;
+		return outputBufferSize == blockOffset;
 	}
 	
 	/**
@@ -300,8 +300,8 @@ public class BinParse
 		// add to output buffer regardless of size
 		for (int i = 0; i < out.length; i++)
 		{
-			outputBuffer[OUTPUT_BUFFER_SIZE] = out[i];
-			OUTPUT_BUFFER_SIZE++;
+			outputBuffer[outputBufferSize] = out[i];
+			outputBufferSize++;
 		}
 	}
 	

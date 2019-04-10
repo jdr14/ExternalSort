@@ -35,7 +35,10 @@ public class MinHeap {
 	 */
 	private int numItemsOutsideHeap;
 	
-	
+	/**
+	 * 
+	 * @return heap as an array of records
+	 */
 	public Record[] getArray()
 	{
 		return heap;
@@ -50,20 +53,6 @@ public class MinHeap {
 		arraySize = 0;
 		heapSize = 0;
 		numItemsOutsideHeap = 0;
-	}
-	
-	/**
-	 * Overloaded constructor
-	 * @param r
-	 * @param size
-	 */
-	public MinHeap(Record[] r, int nItems, int hSize)
-	{
-		heap = r;
-		arraySize = nItems;
-		heapSize = hSize;
-		numItemsOutsideHeap = arraySize - heapSize;
-		minHeapify();
 	}
 	
 	/**
@@ -207,13 +196,28 @@ public class MinHeap {
 			return;
 		}
 		// Does not increase heapSize
-		arraySize++;
 		
 		// Should be inserted at heapSize + 1 or 
 		// arraySize - numItemsOutsideHeap
+		
+		//heap[arraySize - numItemsOutsideHeap] = newEntry;
+		
+		if (heap[heapSize] == null)
+		{
+			heap[heapSize] = newEntry;	
+		}
+		else if (heap[arraySize] == null)
+		{
+			heap[arraySize] = newEntry;
+		}
+		else
+		{
+			System.out.println("Error, heap and array are already filled.  "
+					+ "Exiting to avoid overwriting.");
+			return;
+		}
+		arraySize++;
 		numItemsOutsideHeap++;
-		heap[arraySize - numItemsOutsideHeap] = newEntry;
-		// heap[heapSize + numItemsOutsideHeap] = newEntry;	
 	}
 	
 	/**
@@ -337,7 +341,40 @@ public class MinHeap {
 	}  // End siftUp
 	
 	/**
-	 * 
+	 * Helper method for minHeapify within the context of this project
+	 * helps offload some of the workload to another method
+	 */
+	private void shiftArrayValuesToFront()
+	{
+		// Shift the heap to the front of the array
+		int count = 0;
+		//int numItemsOutsideHeap;
+		
+		// Case where array is padded in the front and back by null values
+		if (heap[maxSize - 1] == null)  
+		{
+			for (int i = arraySize - heapSize; i < arraySize + numItemsOutsideHeap; i++)
+			{
+				heap[count] = heap[i];
+				heap[i] = null;
+				count++;
+			}
+		}
+		// Case array is at the end and null values are stored at the beginning
+		else
+		{
+			for (int i = maxSize - arraySize; i < maxSize; i++)
+			{
+				heap[count] = heap[i];
+				heap[i] = null;
+				count++;
+			}
+		}
+	}
+	
+	/**
+	 * Method to re min heapify intended for use after all values from the 
+	 * original heap have been removed.
 	 */
 	public void minHeapify()
 	{
@@ -347,15 +384,7 @@ public class MinHeap {
 			System.out.println(heap[i].getKey());
 		}
 		*/
-		
-		// Shift the heap to the front of the array
-		int count = 0;
-		for (int i = maxSize - arraySize; i < maxSize; i++)
-		{
-			heap[count] = heap[i];
-			heap[i] = null;
-			count++;
-		}
+		shiftArrayValuesToFront();
 		
 		heapSize = arraySize;
 		for (int i = (arraySize/2) - 1; i >= 0; i--)
@@ -400,6 +429,8 @@ public class MinHeap {
 				}
 			}
 		}
+		
+		numItemsOutsideHeap = 0;
 		/*
 		for (int i = 0; i < arraySize; i++)
 		{
