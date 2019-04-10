@@ -150,11 +150,12 @@ public class BinParse
 				}
 				System.out.println("This is size of heap: " + newHeap.getHeapSize());
 			}
-			// left over because past end of input
+			// empty out heap if there is stuff after input ends
+			emptyHeap();
 			// output rest of min-heap
 			// re-heap rest of array and maybe assign new run?
-			emptyHeap();
 			System.out.println("This is the size of the array before check: " + newHeap.getArraySize());
+			// if array has content, begin new run; heapify; and empty out heap again
 			if (newHeap.getArraySize() != 0)
 			{
 				StartOfRun = true;
