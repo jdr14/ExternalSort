@@ -202,12 +202,12 @@ public class MinHeap {
 		}
 		// Does not increase heapSize
 		arraySize++;
-		
+		numItemsOutsideHeap++;
 		// Should be inserted at heapSize + 1 or 
 		// arraySize - numItemsOutsideHeap
-//		heap[arraySize - numItemsOutsideHeap] = newEntry;
-		heap[heapSize + numItemsOutsideHeap] = newEntry;
-		numItemsOutsideHeap++;
+		heap[arraySize - numItemsOutsideHeap] = newEntry;
+//		heap[heapSize + numItemsOutsideHeap] = newEntry;
+		
 	}
 	
 	/**

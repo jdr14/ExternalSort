@@ -162,6 +162,7 @@ public class BinParse
 				System.out.println("Size of heap before heapify: " + newHeap.getHeapSize());
 				newHeap.minHeapify();
 				System.out.println("Size of heap after heapify: " + newHeap.getHeapSize());
+				System.out.println("Number of items outside heap: " + newHeap.getNumItemsOutsideHeap());
 				emptyHeap();
 			}
 			
