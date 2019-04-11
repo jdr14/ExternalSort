@@ -132,10 +132,9 @@ public class Externalsort
 		return totalBlocks;
 	}
 	
-	private static void createInputBuffers(int blockIndex)
+	private static void createInputBuffers(int blockIndex, int runIndex)
 	{
-		int runCount = 0;
-		int i = 0;
+		int i = runIndex;
 		while (i < pointerList.length && i != 8)
 		// for (int i = 0; i < pointerList.length; i++)
 		{
@@ -162,10 +161,9 @@ public class Externalsort
 			{
 				System.out.println("IOException exception: " + err.getMessage());
 			}
-			
-			i++;
-			runCount++;
+            i++;
 		}
+		runIndex += i;  // Make sure run index is updated
 	}
 	
 	private static long checkSize(int index)
@@ -181,11 +179,22 @@ public class Externalsort
 	{
 		// The current block across all runs
 		int currBlock = 0;
+		int currRunIndex = 0;
 		
 		// Case where the total number of runs is less than or equal to 8
 		if (pointerList.length <= 8)
 		{
-			createInputBuffers(currBlock);
+			createInputBuffers(currBlock, currRunIndex);
+			
+		}
+		// Case where total number of runs is greater than 8
+		else
+		{
+			while (currRunIndex < pointerList.length)
+			{
+				createInputBuffers(currBlock, currRunIndex);
+				//sort(InputBuffers);
+			}
 		}
 	}
 	
