@@ -132,24 +132,39 @@ public class Externalsort
 		return totalBlocks;
 	}
 	
-	private static void createInputBuffers()
+	private static void createInputBuffers(int blockIndex)
 	{
-		for (int i = 0; i < pointerList.length; i++)
+		int runCount = 0;
+		int i = 0;
+		while (i < pointerList.length && i != 8)
+		// for (int i = 0; i < pointerList.length; i++)
 		{
 			byte[] newIB = new byte[(int)BLOCK_OFFSET];
 			byte[] partialIB;
 			
-			long blockSize = checkSize(i);
-			if (blockSize > 0 && blockSize <= BLOCK_OFFSET)  // 0 < blockOffset < 8192
+			long blockSize = checkSize(blockIndex);
+			
+			try
 			{
-				runFile.read(partialIB);
-				inputBuffers.add(partialIB);
+				if (blockSize > 0 && blockSize <= BLOCK_OFFSET)  // 0 < blockOffset < 8192
+				{
+					partialIB = new byte[(int)blockSize];
+					runFile.read(partialIB);
+					inputBuffers.add(partialIB);
+				}
+				else if (blockSize > BLOCK_OFFSET)
+				{
+					runFile.read(newIB);
+					inputBuffers.add(newIB);
+				}
 			}
-			else if (blockSize > BLOCK_OFFSET)
+			catch (IOException err)
 			{
-				runFile.read(newIB);
-				inputBuffers.add(newIB);
+				System.out.println("IOException exception: " + err.getMessage());
 			}
+			
+			i++;
+			runCount++;
 		}
 	}
 	
@@ -164,7 +179,14 @@ public class Externalsort
 	 */
 	private static void beginMerge()
 	{
+		// The current block across all runs
+		int currBlock = 0;
 		
+		// Case where the total number of runs is less than or equal to 8
+		if (pointerList.length <= 8)
+		{
+			createInputBuffers(currBlock);
+		}
 	}
 		
 		/*
