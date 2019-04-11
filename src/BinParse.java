@@ -45,6 +45,11 @@ public class BinParse
 	private List<Long> runFilePointers;
 	
 	/**
+	 * 
+	 */
+	private long endFilePtr;
+	
+	/**
 	 * Output stream used to create run file
 	 */
 	File outFile;
@@ -104,6 +109,7 @@ public class BinParse
 	{
 		// create a record class that sorts the bits
 		outputBufferSize = 0;
+		//long endFile = 0;
 		
 		try
 		{
@@ -165,6 +171,8 @@ public class BinParse
 				dump();
 			}
 			
+			endFilePtr = raf.getFilePointer();
+			
 //			System.out.println("This is the size of the array after check: " + newHeap.getArraySize());
 			// need to close Random Access File
 			raf.close();
@@ -178,7 +186,7 @@ public class BinParse
 		{
 			System.out.println("IOException exception: " + err.getMessage());
 		}
-		return new MergeSort(newHeap);
+		return new MergeSort(newHeap, endFilePtr);
 	}
 	
 	/**
@@ -374,5 +382,13 @@ public class BinParse
 	public byte[] getOutput()
 	{
 		return outputBuffer;
+	}
+	
+	/**
+	 * 
+	 */
+	public long getEndFilePtr()
+	{
+		return endFilePtr;
 	}
 }
