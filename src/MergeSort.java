@@ -11,7 +11,7 @@ import java.io.*;
 public class MergeSort {
 	
 	/**
-	 * max size of the array
+	 * max size of the array 
 	 */
 	private int maxSize = 4096;
 	
@@ -26,7 +26,8 @@ public class MergeSort {
 	 * Temporary default constructor
 	 * @param heAp to gain access to array
 	 */
-	public MergeSort(MinHeap heAp) {
+	public MergeSort(MinHeap heAp) 
+	{
 		recordArray = heAp.getArray();
 		mergeSize = 0;
 	}
