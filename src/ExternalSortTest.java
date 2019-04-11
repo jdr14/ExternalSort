@@ -168,7 +168,7 @@ public class ExternalSortTest extends TestCase
 		}
 		
 		// Now check the values of the minheap
-		assertEquals(mh.getRecord(0).getID(), 2);
+	    assertEquals(mh.getRecord(0).getID(), 2);
 		assertEquals(mh.getRecord(0).getKey(), 1.79, 0.00);
 	}
 }

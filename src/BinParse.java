@@ -83,9 +83,12 @@ public class BinParse
 		newHeap = new MinHeap();
         runFileName = "run";
 		outFile = new File(runFileName);
-		try {
+		try 
+		{
 			runFile = new RandomAccessFile(outFile, "rw");
-		} catch (FileNotFoundException e) {
+		} 
+		catch (FileNotFoundException e) 
+		{
 			System.out.println("Error with creation of run file: " 
 		        + e.getMessage());
 		}
@@ -106,16 +109,10 @@ public class BinParse
 		{
 			RandomAccessFile raf = new RandomAccessFile(fileName, "r");
 			
-//			for (int e = 0; e < 22; e++)
-			while((raf.read(inputBuffer) != -1) /*&& (newHeap.getHeapSize() == 0)*/)
+			// Iterate through the file while there is content to be read
+			while (raf.read(inputBuffer) != -1) 
 			{
-//				raf.seek(e * BLOCK_OFFSET);
-				
-				// Input buffer is filled from byte file
-//				readResult = raf.read(inputBuffer, 0, BLOCK_OFFSET);
-//				if((readResult == -1) && (newHeap.getHeapSize() == 0))
-//					return;
-				
+				// Create records and insert into heap
 				for (int i = 0; i < numRecords; i++) 
 				{    
 					byte[] id = Arrays.copyOfRange(inputBuffer, 
@@ -125,21 +122,21 @@ public class BinParse
 							(i * numBytesPerRecord) + (numBytesPerRecord / 2), 
 							(i * numBytesPerRecord) + numBytesPerRecord);
 					
-					// Record to be inserted into minHeap
+					// Create the next record to be inserted into minHeap
 					insertToMinHeap = bytesToRecord(id, key);
 					
 					// If the working memory (minHeap) is full, send the smallest
 					// record to the output buffer
-//					System.out.println("Output buffer size: " + OUTPUT_BUFFER_SIZE);
 					if (newHeap.arrayIsFull())
 					{
+						// 
 						arrayCheck();
 					}
 					
 					// check if newest Record can be added to minHeap
 					if (validAdditionToOB(insertToMinHeap))
 					{
-						newHeap.insert(insertToMinHeap);  //ith 16 bytes in byteArray	
+						newHeap.insert(insertToMinHeap);
 					}
 					else
 					{
@@ -151,6 +148,8 @@ public class BinParse
 			}
 			// empty out heap if there is stuff after input ends
 			emptyHeap();
+			// Output buffer should now be partially filled
+			
 			// output rest of min-heap
 			// re-heap rest of array and maybe assign new run?
 //			System.out.println("This is the size of the array before check: " + newHeap.getArraySize());
@@ -163,6 +162,7 @@ public class BinParse
 //				System.out.println("Size of heap after heapify: " + newHeap.getHeapSize());
 //				System.out.println("Number of items outside heap: " + newHeap.getNumItemsOutsideHeap());
 				emptyHeap();
+				dump();
 			}
 			
 //			System.out.println("This is the size of the array after check: " + newHeap.getArraySize());
@@ -208,14 +208,15 @@ public class BinParse
 	 * @throws IOException 
 	 * 
 	 */
-	private void arrayCheck() throws IOException {
+	private void arrayCheck() throws IOException 
+	{
 		// if true, add root to output buffer
-		if (newHeap.heapIsFull() && (newHeap.getHeapSize() > 0))
+		if (newHeap.heapIsFull() && newHeap.getHeapSize() > 0)  // If heap is 4096 items big
 		{
 			// check if output buffer is full before adding to it
 			if (isOutputFull())
 			{
-				// if full write to output file
+				// if output buffer is full write to output file
 				dump();
 			}
 			
@@ -233,16 +234,12 @@ public class BinParse
 			// check if output buffer is full before adding to it
 			if (isOutputFull())
 			{
-				// if full write to output file
+				// if output buffer is full write to output file
 				dump();
 			}
 			
 			// remove root of heap and add to output buffer
 			addToOutputBuffer(newHeap.removeSmallest());
-		}
-		else
-		{
-			System.out.println("This is no good");
 		}
 	}
 	/**
