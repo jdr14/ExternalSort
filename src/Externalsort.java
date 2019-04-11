@@ -53,7 +53,7 @@ public class Externalsort
 	/**
 	 * 
 	 */
-	private static long BLOCK_OFFSET;
+	private static long BLOCK_OFFSET = 8192;
 	
 	private static int NUM_BYTES_PER_RECORD = 16;
 	
@@ -65,7 +65,6 @@ public class Externalsort
 	public Externalsort() 
 	{
 		// TODO Auto-generated constructor stub
-		BLOCK_OFFSET = 8192;
 	}
     
 	/**
@@ -208,15 +207,16 @@ public class Externalsort
 	{
 		try 
 		{
+//			for (int i = 0; i < pointerList.size(); i++)
 			int i = 0;
 			
 			while (i < pointerList.size())
-//			for (int i = 0; i < pointerList.size(); i++)
 			{
 				long currentPointer = pointerList.get(i);
 				
 				if ((i + 1) != pointerList.size())
 				{
+					// check to not enter different run
 					if ((currentPointer + BLOCK_OFFSET) < pointerList.get(i+1))
 					{
 						runFile.seek(pointerList.get(i));
@@ -224,27 +224,9 @@ public class Externalsort
 						{
 							return;
 						}
-						for (int e = 0; e < NUM_RECORDS; e++) 
-						{    
-							byte[] id = Arrays.copyOfRange(INPUTBUFFER, 
-									e * NUM_BYTES_PER_RECORD, 
-									(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
-							byte[] key = Arrays.copyOfRange(INPUTBUFFER, 
-									(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
-									(e * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
-							
-							// Record to be inserted into merge array
-							Record insertThis = bytesToRecord(id, key);
-							// if at max capacity of merge array, write to output buffer/ file
-							if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
-							{
-								// removes 512 smallest records and adds them to output
-								writeToOutput();
-							}
-                            // add to the array regardless of size
-							mergeObject.mergeInsert(insertThis);
-							
-						}
+						// function to turn input buffer into records
+						// and insert to merge array
+						blockMergeInsert();
 						
 						// update pointer to file location
 						pointerList.set(i, runFile.getFilePointer());
@@ -270,6 +252,35 @@ public class Externalsort
 	
 	/**
 	 * 
+	 * @param block of bytes to be inserted into merge array
+	 */
+	private static void blockMergeInsert()
+	{
+		for (int e = 0; e < NUM_RECORDS; e++) 
+		{    
+			byte[] id = Arrays.copyOfRange(INPUTBUFFER, 
+					e * NUM_BYTES_PER_RECORD, 
+					(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
+			byte[] key = Arrays.copyOfRange(INPUTBUFFER, 
+					(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
+					(e * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+			
+			// Record to be inserted into merge array
+			Record insertThis = bytesToRecord(id, key);
+			// if at max capacity of merge array, write to output buffer/ file
+			if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
+			{
+				// removes 512 smallest records and adds them to output
+				writeToOutput();
+			}
+            // add to the array regardless of size
+			mergeObject.mergeInsert(insertThis);
+			
+		}
+	}
+	
+	/**
+	 * 
 	 * @param id
 	 * @param key
 	 * @return
@@ -291,7 +302,7 @@ public class Externalsort
 	{
 		for (int i = 0; i < NUM_RECORDS; i++)
 		{
-//			 Record outputRecord = mergeObject.removeSmallest();
+			 Record outputRecord = mergeObject.removeSmallest();
 		}
 	}
 	
