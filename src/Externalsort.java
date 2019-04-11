@@ -99,7 +99,7 @@ public class Externalsort
 			{
 				long currentPointer = pointerList.get(i);
 				
-				if ((i + 1) <= pointerList.size())
+				if ((i + 1) != pointerList.size())
 				{
 					if ((currentPointer + BLOCK_OFFSET) < pointerList.get(i+1))
 					{
@@ -122,6 +122,7 @@ public class Externalsort
 							mergeObject.mergeInsert(insertThis);
 							
 						}
+						
 						// update pointer to file location
 						pointerList.set(i, runFile.getFilePointer());
 					}
@@ -130,6 +131,8 @@ public class Externalsort
 						i++;
 					}
 				}
+				else
+					break;
 			}
 		} 
 		catch (IOException e) {
