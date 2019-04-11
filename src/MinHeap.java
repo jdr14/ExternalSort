@@ -384,8 +384,11 @@ public class MinHeap {
 			System.out.println(heap[i].getKey());
 		}
 		*/
-		shiftArrayValuesToFront();
-		
+		if (arraySize != maxSize)
+		{
+			shiftArrayValuesToFront();
+		}
+
 		heapSize = arraySize;
 		for (int i = (arraySize/2) - 1; i >= 0; i--)
 		{
