@@ -222,6 +222,22 @@ public class Externalsort
 	}
 	
 	/**
+	 * Check to see if all runs have finished.
+	 * @return boolean value dependent on if all runs have hit their end
+	 */
+	private static boolean allRunsAtAnEnd()
+	{
+		for (int i = 0; i < pointerList.length; i++)
+		{
+			if (pointerList[i].getValue())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * 
 	 * block of bytes to be inserted into merge array
 	 */
