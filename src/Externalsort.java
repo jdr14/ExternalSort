@@ -99,6 +99,10 @@ public class Externalsort
         
 	}
 	
+	/**
+	 * 
+	 * @param oldPointerList
+	 */
 	private static void fillPointerList(List<Long> oldPointerList)
 	{
 		for (int i = 0; i < pointerList.length; i++)
@@ -132,6 +136,11 @@ public class Externalsort
 		return totalBlocks;
 	}
 	
+	/**
+	 * 
+	 * @param blockIndex
+	 * @param runIndex
+	 */
 	private static void createInputBuffers(int blockIndex, int runIndex)
 	{
 		int i = runIndex;
@@ -204,26 +213,31 @@ public class Externalsort
 	 */
 	private static void blockMergeInsert()
 	{
-		for (int e = 0; e < NUM_RECORDS; e++) 
-		{    
-			byte[] id = Arrays.copyOfRange(INPUTBUFFER, 
-					e * NUM_BYTES_PER_RECORD, 
-					(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
-			byte[] key = Arrays.copyOfRange(INPUTBUFFER, 
-					(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
-					(e * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+		for (int i = 0; i < inputBuffers.size(); i++)
+		{
+			byte[] tempInputBuffer = inputBuffers.get(i);
 			
-			// Record to be inserted into merge array
-			Record insertThis = bytesToRecord(id, key);
-			// if at max capacity of merge array, write to output buffer/ file
-			if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
-			{
-				// removes 512 smallest records and adds them to output
-				writeToOutput();
+			for (int e = 0; e < NUM_RECORDS; e++) 
+			{    
+				byte[] id = Arrays.copyOfRange(INPUTBUFFER, 
+						e * NUM_BYTES_PER_RECORD, 
+						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
+				byte[] key = Arrays.copyOfRange(INPUTBUFFER, 
+						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
+						(e * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+				
+				// Record to be inserted into merge array
+				Record insertThis = bytesToRecord(id, key);
+				// if at max capacity of merge array, write to output buffer/ file
+				if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
+				{
+					// removes 512 smallest records and adds them to output
+					writeToOutput();
+				}
+	            // add to the array regardless of size
+				mergeObject.mergeInsert(insertThis);
+				
 			}
-            // add to the array regardless of size
-			mergeObject.mergeInsert(insertThis);
-			
 		}
 	}
 	

@@ -188,7 +188,7 @@ public class ExternalSortTest extends TestCase
 		
 		// check specification to see if merge has correct numbers
 		assertEquals(m.getMergeSize(), 3);
-		assertEquals(m.getMaxSize(), 4096);
+		assertEquals(m.getMaxSize(), 512);
 		assertEquals(m.isMergeFull(), false);
 		
 		// test the remove smallest function
