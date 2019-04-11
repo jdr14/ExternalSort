@@ -210,7 +210,7 @@ public class BinParse
 	 */
 	private void arrayCheck() throws IOException {
 		// if true, add root to output buffer
-		if (newHeap.heapIsFull())
+		if (newHeap.heapIsFull() && (newHeap.getHeapSize() > 0))
 		{
 			// check if output buffer is full before adding to it
 			if (isOutputFull())
@@ -229,6 +229,20 @@ public class BinParse
 			
 			// flag that beginning of run
 			StartOfRun = true;
+			
+			// check if output buffer is full before adding to it
+			if (isOutputFull())
+			{
+				// if full write to output file
+				dump();
+			}
+			
+			// remove root of heap and add to output buffer
+			addToOutputBuffer(newHeap.removeSmallest());
+		}
+		else
+		{
+			System.out.println("This is no good");
 		}
 	}
 	/**
