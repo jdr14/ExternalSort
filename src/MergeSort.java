@@ -14,7 +14,7 @@ public class MergeSort {
 	private int maxSize = 4096;
 	
 	/**
-	 * 
+	 * current size of merge array
 	 */
 	private int mergeSize;
 	
