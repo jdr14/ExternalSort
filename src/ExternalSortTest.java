@@ -1,6 +1,6 @@
 // import java.io.ByteArrayOutputStream;
 // import java.io.PrintStream;
-import java.util.*;
+//import java.util.*;
 
 import student.TestCase;
 
@@ -163,7 +163,8 @@ public class ExternalSortTest extends TestCase
 		{
 			if (r[i] != null)
 			{
-				System.out.println("i = " + i + " ID = " + r[i].getID() + " : Key = " + r[i].getKey());
+				System.out.println("i = " + i + " ID = " + r[i].getID() 
+						+ " : Key = " + r[i].getKey());
 			}
 		}
 		
@@ -172,8 +173,52 @@ public class ExternalSortTest extends TestCase
 		assertEquals(mh.getRecord(0).getKey(), 1.79, 0.00);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testMergeSort()
 	{
+		// create merge sort using default constructor
+		MergeSort m = new MergeSort(mh);
+		
+		// test the insert function
+		m.mergeInsert(new Record(7, 8.923));
+		m.mergeInsert(new Record(3, 1.023));
+		m.mergeInsert(new Record(5, 9.62));
+		
+		// check specification to see if merge has correct numbers
+		assertEquals(m.getMergeSize(), 3);
+		assertEquals(m.getMaxSize(), 512);
+		assertEquals(m.isMergeFull(), false);
+		
+		// test the remove smallest function
+		Record small = m.removeSmallest();
+		
+		// check correct record was returned
+		assertEquals(small.getID(), 3);
+		assertEquals(small.getKey(), 1.023, 0.12);
+		assertEquals(m.isMergeFull(), false);
+	}
+	
+	/**
+	 * 
+	 */
+	public void testPair()
+	{
+		// create pair using default constructor
+		Pair<Integer, Boolean> p = new Pair<Integer, Boolean>();
+		
+		p.setKey(23);
+		p.setValue(true);
+		
+		assertEquals((int) p.getKey(), 23);
+		assertEquals((boolean) p.getValue(), true);
+		
+		// creates pair using constructor with parameters
+		Pair<Integer, Boolean> p1 = new Pair<Integer, Boolean>(32, false);
+		
+		assertEquals((int) p1.getKey(), 32);
+		assertEquals((boolean) p1.getValue(), false);
 		
 	}
 }

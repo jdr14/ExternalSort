@@ -162,7 +162,6 @@ public class MinHeap {
 	public void insert(Record newEntry)
 	{
 		// Check that the heap array is within its size limits.
-		// assert HEAP_SIZE >= (MAX_SIZE - 1) : "Heap is full"
 		if (heapSize >= (maxSize))
 		{
 			System.out.println("Heap is full!");
@@ -180,7 +179,7 @@ public class MinHeap {
 		// Insert the record entry at the next available empty slot in the heap
 		heap[heapSize - 1] = newEntry;
 		
-		// Keep the minHeap array ordered as a min heap
+		// Keep the minHeap array ordered as a min-heap
 		siftUp();
 	}
 	
@@ -196,11 +195,6 @@ public class MinHeap {
 			return;
 		}
 		// Does not increase heapSize
-		
-		// Should be inserted at heapSize + 1 or 
-		// arraySize - numItemsOutsideHeap
-		
-		//heap[arraySize - numItemsOutsideHeap] = newEntry;
 		
 		if (heap[heapSize] == null)
 		{
@@ -353,7 +347,8 @@ public class MinHeap {
 		// Case where array is padded in the front and back by null values
 		if (heap[maxSize - 1] == null)  
 		{
-			for (int i = arraySize - heapSize; i < arraySize + numItemsOutsideHeap; i++)
+			for (int i = arraySize - heapSize;
+					i < arraySize + numItemsOutsideHeap; i++)
 			{
 				heap[count] = heap[i];
 				heap[i] = null;
@@ -378,12 +373,6 @@ public class MinHeap {
 	 */
 	public void minHeapify()
 	{
-		/*
-		for (int i = 0; i < arraySize; i++)
-		{
-			System.out.println(heap[i].getKey());
-		}
-		*/
 		if (arraySize != maxSize)
 		{
 			shiftArrayValuesToFront();
@@ -423,8 +412,6 @@ public class MinHeap {
 				
 				double leftKey = leftChild.getKey();
 				double parentKey = parent.getKey();
-				//System.out.println("left key = " + leftKey);
-				//System.out.println("parent key = " + parentKey);
 				if (leftKey < parentKey)
 				{
 					// Swap left with the parent (by index)
@@ -434,12 +421,7 @@ public class MinHeap {
 		}
 		
 		numItemsOutsideHeap = 0;
-		/*
-		for (int i = 0; i < arraySize; i++)
-		{
-			System.out.println(heap[i].getKey());
-		}
-		*/
+
 	}
 
 	/**
