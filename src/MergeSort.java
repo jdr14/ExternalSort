@@ -1,5 +1,3 @@
-import java.util.*;
-import java.io.*;
 
 /**
  * 
@@ -15,15 +13,10 @@ public class MergeSort {
 	 */
 	private int maxSize = 4096;
 	
-	private int blockSize = 8192;
-	
+	/**
+	 * 
+	 */
 	private int mergeSize;
-	
-	private List<byte[]> inputBuffers;
-	
-	private byte[] outputBuffer;
-	
-	private long endFilePointer;
 	
     /**
      * array of records used for performance
@@ -34,11 +27,9 @@ public class MergeSort {
 	 * Temporary default constructor
 	 * @param heAp to gain access to array
 	 */
-	public MergeSort(MinHeap heAp, long endFile) 
+	public MergeSort(MinHeap heAp) 
 	{
-		// inputBuffers = IBs;
 		recordArray = heAp.getArray();   
-		endFilePointer = endFile;
 		mergeSize = 0;
 	}
 	
@@ -81,7 +72,7 @@ public class MergeSort {
 	
 	/**
 	 * 
-	 * @return
+	 * @return the record that was removed
 	 */
 	public Record removeSmallest()
 	{
@@ -95,7 +86,7 @@ public class MergeSort {
 	}
 	
 	/**
-	 * 
+	 * Shifts all of the entries in an array up one
 	 */
 	private void shiftUp()
 	{
@@ -108,7 +99,7 @@ public class MergeSort {
 	
 	/**
 	 * 
-	 * @return
+	 * @return true if the merge array is full
 	 */
 	public boolean isMergeFull()
 	{
@@ -118,7 +109,7 @@ public class MergeSort {
     /**
      * 
      * @param reCord
-     * @return
+     * @return the correct index where new record belongs
      */
 	private int findCorrectIndex(Record reCord)
 	{

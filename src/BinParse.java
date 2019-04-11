@@ -45,7 +45,7 @@ public class BinParse
 	private List<Long> runFilePointers;
 	
 	/**
-	 * 
+	 * reference to end of data in file
 	 */
 	private long endFilePtr;
 	
@@ -79,8 +79,14 @@ public class BinParse
 	 */
 	MinHeap newHeap;
 	
+	/**
+	 * Flag to indicate beginning of run
+	 */
 	private boolean StartOfRun;
 	
+	/**
+	 * default constructor for Bin Parse class
+	 */
 	public BinParse()
 	{
 		outputBufferSize = 0;
@@ -109,7 +115,6 @@ public class BinParse
 	{
 		// create a record class that sorts the bits
 		outputBufferSize = 0;
-		//long endFile = 0;
 		
 		try
 		{
@@ -135,7 +140,8 @@ public class BinParse
 					// record to the output buffer
 					if (newHeap.arrayIsFull())
 					{
-						// 
+						// takes care of heap is full case and
+						// data outside of heap is full case
 						arrayCheck();
 					}
 					
@@ -150,35 +156,27 @@ public class BinParse
 						newHeap.addToArray(insertToMinHeap);
 					}
 				}
-//				System.out.println("This is size of heap: " + newHeap.getHeapSize());
 			}
 			// empty out heap if there is stuff after input ends
 			emptyHeap();
-			// Output buffer should now be partially filled
-			
-			// output rest of min-heap
-			// re-heap rest of array and maybe assign new run?
-//			System.out.println("This is the size of the array before check: " + newHeap.getArraySize());
-			// if array has content, begin new run; heapify; and empty out heap again
+
+			// if array has content, empty out
 			if (newHeap.getArraySize() != 0)
 			{
+				// begin new run
 				StartOfRun = true;
-//				System.out.println("Size of heap before heapify: " + newHeap.getHeapSize());
+				// re-heap the array
 				newHeap.minHeapify();
-//				System.out.println("Size of heap after heapify: " + newHeap.getHeapSize());
-//				System.out.println("Number of items outside heap: " + newHeap.getNumItemsOutsideHeap());
+				// empty out remaining data
 				emptyHeap();
+				// Output buffer should now be partially filled
 				dump();
-				// end of run file pointer
-				long endFilePointer = runFile.getFilePointer();
 			}
-			
+			// end of run file pointer
 			endFilePtr = raf.getFilePointer();
 			
-//			System.out.println("This is the size of the array after check: " + newHeap.getArraySize());
 			// need to close Random Access File
 			raf.close();
-//			System.out.println("This is pointerarraysize: " + runFilePointers.size());
 		}
         catch (FileNotFoundException err)
 		{
@@ -188,12 +186,13 @@ public class BinParse
 		{
 			System.out.println("IOException exception: " + err.getMessage());
 		}
-		return new MergeSort(newHeap, endFilePtr);
+		return new MergeSort(newHeap);
 	}
 	
 	/**
 	 * @throws IOException 
-	 * 
+	 * Function used to remove the rest of heap into
+	 * output. Continues while heap has content
 	 */
 	private void emptyHeap() throws IOException
 	{
@@ -206,23 +205,21 @@ public class BinParse
 				dump();
 			}
 			
-//			if (newHeap.getRecord(0) == null)
-//			{
-				// remove root of heap and add to output buffer
-				addToOutputBuffer(newHeap.removeSmallest());
-//			}
-//			System.out.println("This is size of heap: " + newHeap.getHeapSize());
+			// remove root of heap and add to output buffer
+			addToOutputBuffer(newHeap.removeSmallest());
 		}
 	}
+	
 	/**
 	 * @throws IOException 
-	 * 
+	 * Function called in main to determine what the content of
+	 * the array is and what actions to take when array is full
 	 */
 	private void arrayCheck() throws IOException 
 	{
 		// if true, add root to output buffer
-		if (newHeap.heapIsFull() && newHeap.getHeapSize() > 0)  // If heap is 4096 items big
-		{
+		if (newHeap.heapIsFull() && newHeap.getHeapSize() > 0)
+		{  // If heap is 4096 items big
 			// check if output buffer is full before adding to it
 			if (isOutputFull())
 			{
@@ -252,9 +249,11 @@ public class BinParse
 			addToOutputBuffer(newHeap.removeSmallest());
 		}
 	}
+	
 	/**
 	 * 
 	 * @throws IOException
+	 * Empty out the output buffer into the run file
 	 */
 	private void dump() throws IOException
 	{
@@ -272,6 +271,7 @@ public class BinParse
 		
 		// reset output buffer size
 		outputBufferSize = 0;
+		
 		// if output buffer is empty, reset latest in output buffer variable
 		latestInOB = null;
 	}
@@ -319,7 +319,8 @@ public class BinParse
 			ByteBuffer.wrap(tempOut1).putDouble(smallest.getKey());
 			ByteBuffer.wrap(tempOut2).putLong(smallest.getID());
 			
-			// Combines both arrays to create one final array to add to outputBuffer
+			// Combines both arrays to create one 
+			// final array to add to outputBuffer
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			output.write(tempOut2);
 			output.write(tempOut1);
@@ -387,7 +388,7 @@ public class BinParse
 	}
 	
 	/**
-	 * 
+	 * @return the end of file pointer as long
 	 */
 	public long getEndFilePtr()
 	{
