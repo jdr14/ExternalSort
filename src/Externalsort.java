@@ -216,36 +216,9 @@ public class Externalsort
 			if (pointerList.length <= 8)
 			{
 				createInputBuffers(currBlock, currRunIndex);
-				// TODO: Sort function to sort the input buffers here
-			}
-			// Case where total number of runs is greater than 8
-			else
-			{
-				while (currRunIndex < pointerList.length)
-				{
-					createInputBuffers(currBlock, currRunIndex);
-					// TODO: Sort function to sort the input buffers here
-				}
-			}
-			// Increment to the next block of the runs
-			currBlock++;
-		}
-	}
-	
-	/**
-	 * Check to see if all runs have finished.
-	 * @return boolean value dependent on if all runs have hit their end
-	 */
-	private static boolean allRunsAtAnEnd()
-	{
-		for (int i = 0; i < pointerList.length; i++)
-		{
-			if (pointerList[i].getValue())
-			{
-				return false;
+				blockMergeInsert();
 			}
 		}
-		return true;
 	}
 	
 	/**
@@ -254,32 +227,115 @@ public class Externalsort
 	 */
 	private static void blockMergeInsert()
 	{
-		for (int i = 0; i < inputBuffers.size(); i++)
+		// indicates what entry was removed from record array
+		int removed = -1;
+		// records list to hold top records
+		List<Record> recordList = new ArrayList<Record>(inputBuffers.size());
+		// list of indexes to keep track of where you are in the block
+		List<Integer> indexList = new ArrayList<Integer>(inputBuffers.size());
+		// initialize to 0
+		for (int i = 0; i < indexList.size(); i++)
 		{
-			byte[] tempInputBuffer = inputBuffers.get(i);
-			
-			for (int e = 0; e < NUM_RECORDS; e++) 
-			{    
-				byte[] id = Arrays.copyOfRange(INPUTBUFFER, 
-						e * NUM_BYTES_PER_RECORD, 
-						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
-				byte[] key = Arrays.copyOfRange(INPUTBUFFER, 
-						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
-						(e * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
-				
-				// Record to be inserted into merge array
-				Record insertThis = bytesToRecord(id, key);
-				// if at max capacity of merge array, write to output buffer/ file
-				if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
+			indexList.add(i, 0);
+		}
+		
+		for (int j = 0; j < NUM_RECORDS; j++)
+		{
+			// case where array is empty and top of all blocks are needed
+			if (j == 0)
+			{
+				// fill all of record list with top records
+				for (int e = 0; e < inputBuffers.size(); e++)
 				{
-					// removes 512 smallest records and adds them to output
-					writeToOutput();
+					byte[] id = Arrays.copyOfRange(inputBuffers.get(e), 
+							0 * NUM_BYTES_PER_RECORD, 
+							(0 * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
+				    byte[] key = Arrays.copyOfRange(inputBuffers.get(e), 
+				    		(0 * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
+				    		(0 * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+				    Record insertThis = bytesToRecord(id, key);
+				    recordList.add(e, insertThis);
 				}
-	            // add to the array regardless of size
-				mergeObject.mergeInsert(insertThis);
-				
+			}
+			else
+			{    // get the record from the block that got removed
+				if ((indexList.get(removed)+1) < 512)
+				{
+					// update the input buffer changed to the next record
+					indexList.add(removed, (indexList.get(removed)+1));
+					// get the bytes from the index in the 
+					byte[] id = Arrays.copyOfRange(inputBuffers.get(removed), 
+							indexList.get(removed) * NUM_BYTES_PER_RECORD, 
+							(indexList.get(removed) * NUM_BYTES_PER_RECORD) + 
+							(NUM_BYTES_PER_RECORD / 2));
+				    byte[] key = Arrays.copyOfRange(inputBuffers.get(removed), 
+				    		(indexList.get(removed) * NUM_BYTES_PER_RECORD) + 
+				    		(NUM_BYTES_PER_RECORD / 2), 
+				    		(indexList.get(removed) * NUM_BYTES_PER_RECORD) + 
+				    		NUM_BYTES_PER_RECORD);
+				    Record insertThis = bytesToRecord(id, key);
+				    recordList.add(removed, insertThis);
+				}
+			}
+			
+			// removes the smallest record and returns of location of
+			// empty entry
+			removed = removedSmallestRecord(recordList);
+		}
+		
+//		for (int i = 0; i < inputBuffers.size(); i++)
+//		{
+//			byte[] tempInputBuffer = inputBuffers.get(i);
+//			
+//			for (int e = 0; e < NUM_RECORDS; e++) 
+//			{    
+//				byte[] id = Arrays.copyOfRange(INPUTBUFFER, 
+//						e * NUM_BYTES_PER_RECORD, 
+//						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
+//				byte[] key = Arrays.copyOfRange(INPUTBUFFER, 
+//						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
+//						(e * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
+//				
+//				// Record to be inserted into merge array
+//				Record insertThis = bytesToRecord(id, key);
+//				// if at max capacity of merge array, write to output buffer/ file
+//				if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
+//				{
+//					// removes 512 smallest records and adds them to output
+//					writeToOutput();
+//				}
+//	            // add to the array regardless of size
+//				mergeObject.mergeInsert(insertThis);
+//				
+//			}
+//		}
+	}
+	
+	private static int removedSmallestRecord(List<Record> currentList)
+	{
+		int result = -1;
+		Record smallest = currentList.get(0);
+		// start at one because biggest is already 0 as set above
+		for (int i = 1; i < currentList.size(); i++)
+		{
+			Record temp = currentList.get(i);
+			if (smallest.getKey() > temp.getKey() )
+			{
+				smallest = temp;
+				result = i;
 			}
 		}
+		
+		// insert smallest into the merge list
+		if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
+		{
+			// removes 512 smallest records and adds them to output
+			writeToOutput();
+		}
+        // add to the array regardless of size
+		mergeObject.mergeInsert(smallest);
+		
+		return result;
 	}
 	
 	/**
