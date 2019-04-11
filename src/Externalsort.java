@@ -268,33 +268,6 @@ public class Externalsort
 			// empty entry
 			removed = removedSmallestRecord(recordList);
 		}
-		
-//		for (int i = 0; i < inputBuffers.size(); i++)
-//		{
-//			byte[] tempInputBuffer = inputBuffers.get(i);
-//			
-//			for (int e = 0; e < NUM_RECORDS; e++) 
-//			{    
-//				byte[] id = Arrays.copyOfRange(INPUTBUFFER, 
-//						e * NUM_BYTES_PER_RECORD, 
-//						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2));
-//				byte[] key = Arrays.copyOfRange(INPUTBUFFER, 
-//						(e * NUM_BYTES_PER_RECORD) + (NUM_BYTES_PER_RECORD / 2), 
-//						(e * NUM_BYTES_PER_RECORD) + NUM_BYTES_PER_RECORD);
-//				
-//				// Record to be inserted into merge array
-//				Record insertThis = bytesToRecord(id, key);
-//				// if at max capacity of merge array, write to output buffer/ file
-//				if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
-//				{
-//					// removes 512 smallest records and adds them to output
-//					writeToOutput();
-//				}
-//	            // add to the array regardless of size
-//				mergeObject.mergeInsert(insertThis);
-//				
-//			}
-//		}
 	}
 	
 	private static int removedSmallestRecord(List<Record> currentList)
