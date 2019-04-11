@@ -163,6 +163,8 @@ public class BinParse
 //				System.out.println("Number of items outside heap: " + newHeap.getNumItemsOutsideHeap());
 				emptyHeap();
 				dump();
+				// end of run file pointer
+				long endFilePointer = runFile.getFilePointer();
 			}
 			
 //			System.out.println("This is the size of the array after check: " + newHeap.getArraySize());

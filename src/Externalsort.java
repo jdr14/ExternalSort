@@ -149,9 +149,7 @@ public class Externalsort
 					{
 						return;
 					}
-					
-					// TODO: remove the comment below once the function exists!!!!
-					// blockMergeInsert();
+					blockMergeInsert();
 				}
 				else if (beginCurrBlock == numBlocksInCurrRun - 1)
 				{
@@ -167,7 +165,7 @@ public class Externalsort
 						runFile.read(temp);
 						
 						// TODO: remove the comment below once the function exists!!!!
-						// blockMergeInsert(remainder);
+//						 blockMergeInsert(remainder);
 
 					}
 					else  // If no remainder, parse as one more normal block
@@ -175,8 +173,7 @@ public class Externalsort
 						// Set the starting point before reading input
 						runFile.seek(beginRunPointer + beginCurrBlock);
 						
-						// TODO: remove the comment below once the function exists!!!!
-						// blockMergeInsert();
+						blockMergeInsert();
 					}
 				}
 				else
@@ -197,7 +194,6 @@ public class Externalsort
 		}  // end try
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
 			System.err.println("Error in beginMerge: " + e.getMessage());
 		}
 	}
@@ -244,7 +240,6 @@ public class Externalsort
 		} 
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
 			System.err.println("Error in beginMerge: " + e.getMessage());
 		}
 	}
