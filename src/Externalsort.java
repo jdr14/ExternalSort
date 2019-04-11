@@ -150,6 +150,9 @@ public class Externalsort
 					partialIB = new byte[(int)blockSize];
 					runFile.read(partialIB);
 					inputBuffers.add(partialIB);
+					
+					// This is the end of this run, so set to false
+					pointerList[i].setValue(false);
 				}
 				else if (blockSize > BLOCK_OFFSET)
 				{
@@ -179,23 +182,47 @@ public class Externalsort
 	{
 		// The current block across all runs
 		int currBlock = 0;
-		int currRunIndex = 0;
+		int currRunIndex;
 		
-		// Case where the total number of runs is less than or equal to 8
-		if (pointerList.length <= 8)
+		while (!allRunsAtAnEnd())
 		{
-			createInputBuffers(currBlock, currRunIndex);
+			// Set the run index back to the start run for every iteration
+			currRunIndex = 0;
 			
-		}
-		// Case where total number of runs is greater than 8
-		else
-		{
-			while (currRunIndex < pointerList.length)
+			// Case where the total number of runs is less than or equal to 8
+			if (pointerList.length <= 8)
 			{
 				createInputBuffers(currBlock, currRunIndex);
-				//sort(InputBuffers);
+				// TODO: Sort function to sort the input buffers here
+			}
+			// Case where total number of runs is greater than 8
+			else
+			{
+				while (currRunIndex < pointerList.length)
+				{
+					createInputBuffers(currBlock, currRunIndex);
+					// TODO: Sort function to sort the input buffers here
+				}
+			}
+			// Increment to the next block of the runs
+			currBlock++;
+		}
+	}
+	
+	/**
+	 * Check to see if all runs have finished.
+	 * @return boolean value dependent on if all runs have hit their end
+	 */
+	private static boolean allRunsAtAnEnd()
+	{
+		for (int i = 0; i < pointerList.length; i++)
+		{
+			if (pointerList[i].getValue())
+			{
+				return false;
 			}
 		}
+		return true;
 	}
 		
 		/*
