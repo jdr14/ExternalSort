@@ -150,23 +150,30 @@ public class Externalsort
 			byte[] newIB = new byte[(int)BLOCK_OFFSET];
 			byte[] partialIB;
 			
-			long blockSize = checkSize(blockIndex);
+			// Check to see if the blcok is full sized or partial
+			long blockSize = checkSize(runIndex, blockIndex);
 			
 			try
 			{
-				if (blockSize > 0 && blockSize <= BLOCK_OFFSET)  // 0 < blockOffset < 8192
+				// Case 1) 0 < blockOffset < 8192
+				if (blockSize > 0 && blockSize <= BLOCK_OFFSET)  
 				{
 					partialIB = new byte[(int)blockSize];
-					runFile.read(partialIB);
-					inputBuffers.add(partialIB);
-					
+					if (runFile.read(partialIB) != -1)
+					{
+						inputBuffers.add(partialIB);
+					}
+				
 					// This is the end of this run, so set to false
 					pointerList[i].setValue(false);
 				}
+				// Case 2) blockSize > 8192
 				else if (blockSize > BLOCK_OFFSET)
 				{
-					runFile.read(newIB);
-					inputBuffers.add(newIB);
+					if (runFile.read(newIB) != -1)
+					{
+						inputBuffers.add(newIB);
+					}
 				}
 			}
 			catch (IOException err)
@@ -178,14 +185,21 @@ public class Externalsort
 		runIndex += i;  // Make sure run index is updated
 	}
 	
-	private static long checkSize(int index)
+	/**
+	 * 
+	 * @param runIndex current run 
+	 * @param blockIndex current block within current run
+	 * @return how far away current block start is from end of file
+	 */
+	private static long checkSize(int runIndex, int blockIndex)
 	{
-		return (endOfFile - pointerList[index].getKey());
+		return (endOfFile - (pointerList[runIndex].getKey() + 
+		                     blockIndex * BLOCK_OFFSET));
 	}
 	
 	/**
 	 * 
-	 * @param pointerList
+	 * Begin merge sorting the runs
 	 */
 	private static void beginMerge()
 	{
@@ -236,7 +250,7 @@ public class Externalsort
 	
 	/**
 	 * 
-	 * @param block of bytes to be inserted into merge array
+	 * block of bytes to be inserted into merge array
 	 */
 	private static void blockMergeInsert()
 	{
@@ -270,15 +284,14 @@ public class Externalsort
 	
 	/**
 	 * 
-	 * @param id
-	 * @param key
-	 * @return
+	 * @param id byte array 
+	 * @param key byte array
+	 * @return Record created from the byte arrays passed in
 	 */
 	private static Record bytesToRecord(byte[] id, byte[] key)
 	{
 		// Convert the key and id buffers to double and long 
 		long rid = ByteBuffer.wrap(id).getLong();
-		//System.out.println(recordID);
 		double rkey = ByteBuffer.wrap(key).getDouble();
 		
 		return new Record(rid, rkey);
