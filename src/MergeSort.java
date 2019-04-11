@@ -15,7 +15,15 @@ public class MergeSort {
 	 */
 	private int maxSize = 4096;
 	
+	private int blockSize = 8192;
+	
 	private int mergeSize;
+	
+	private List<byte[]> inputBuffers;
+	
+	private byte[] outputBuffer;
+	
+	private long endFilePointer;
 	
     /**
      * array of records used for performance
@@ -26,9 +34,11 @@ public class MergeSort {
 	 * Temporary default constructor
 	 * @param heAp to gain access to array
 	 */
-	public MergeSort(MinHeap heAp) 
+	public MergeSort(MinHeap heAp, long endFile) 
 	{
-		recordArray = heAp.getArray();
+		// inputBuffers = IBs;
+		recordArray = heAp.getArray();   
+		endFilePointer = endFile;
 		mergeSize = 0;
 	}
 	

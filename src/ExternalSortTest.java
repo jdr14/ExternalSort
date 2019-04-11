@@ -138,7 +138,7 @@ public class ExternalSortTest extends TestCase
 		
 		assertEquals(mh.getHeapSize(), 3);
 		assertEquals(mh.getArraySize(), 6);
-		assertEquals(mh.getNumItemsOutsideHeap(), 3);
+		assertEquals(mh.getNumItemsOutsideHeap(), 3);    
 		
 		// Remove the 3 smallest items still in the heap
 		mh.removeSmallest();
