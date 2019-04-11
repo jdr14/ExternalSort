@@ -196,7 +196,8 @@ public class ExternalSortTest extends TestCase
 		
 		// check correct record was returned
 		assertEquals(small.getID(), 3);
-		assertEquals(small.getKey(), 1.023);
+		assertEquals(small.getKey(), 1.023, 0.12);
+		assertEquals(m.isMergeFull(), false);
 	}
 	
 	/**

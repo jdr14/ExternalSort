@@ -114,7 +114,7 @@ public class MergeSort {
 	private int findCorrectIndex(Record reCord)
 	{
 		// iterate through current array
-		for(int i = 1; i < mergeSize; i++)
+		for(int i = 0; i < mergeSize; i++)
 		{
 			// create a temporary record variable at location in array
 			Record temp = recordArray[i];
@@ -144,11 +144,6 @@ public class MergeSort {
 		if ((mergeSize + 1) < maxSize)
 		{
 			recordArray[mergeSize+1] = holdRecord;
-		}
-		else
-		{
-			// might be an issue adding removed record back
-			System.out.println("Enters the bad case.");
 		}
 	}
 	
