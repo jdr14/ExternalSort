@@ -286,26 +286,30 @@ public class BinParse
 	 */
 	private void addToOutputBuffer(Record smallest) throws IOException
 	{
-		// keep latest insert to output buffer record up to date
-		latestInOB = smallest;
-		
-		// creates byte arrays out the Record ID and Record Key
-		byte[] tempOut1 = new byte[8];
-		byte[] tempOut2 = new byte[8];
-		ByteBuffer.wrap(tempOut1).putDouble(smallest.getKey());
-		ByteBuffer.wrap(tempOut2).putLong(smallest.getID());
-		
-		// Combines both arrays to create one final array to add to outputBuffer
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		output.write(tempOut2);
-		output.write(tempOut1);
-		byte[] out = output.toByteArray();
-		
-		// add to output buffer regardless of size
-		for (int i = 0; i < out.length; i++)
+		if (smallest != null)
 		{
-			outputBuffer[outputBufferSize] = out[i];
-			outputBufferSize++;
+			// keep latest insert to output buffer record up to date
+			latestInOB = smallest;
+			
+			// creates byte arrays out the Record ID and Record Key
+			byte[] tempOut1 = new byte[8];
+			byte[] tempOut2 = new byte[8];
+
+			ByteBuffer.wrap(tempOut1).putDouble(smallest.getKey());
+			ByteBuffer.wrap(tempOut2).putLong(smallest.getID());
+			
+			// Combines both arrays to create one final array to add to outputBuffer
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			output.write(tempOut2);
+			output.write(tempOut1);
+			byte[] out = output.toByteArray();
+			
+			// add to output buffer regardless of size
+			for (int i = 0; i < out.length; i++)
+			{
+				outputBuffer[outputBufferSize] = out[i];
+				outputBufferSize++;
+			}
 		}
 	}
 	
