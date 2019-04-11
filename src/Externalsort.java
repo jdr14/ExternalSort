@@ -119,12 +119,21 @@ public class Externalsort
 							
 							// Record to be inserted into merge array
 							Record insertThis = bytesToRecord(id, key);
+							// if at max capacity of merge array, write to output buffer/ file
+							if (mergeObject.getMergeSize() >= mergeObject.getMaxSize())
+							{
+								// removes 512 smallest records and adds them to output
+								writeToOutput();
+							}
+                            // add to the array regardless of size
 							mergeObject.mergeInsert(insertThis);
 							
 						}
 						
 						// update pointer to file location
 						pointerList.set(i, runFile.getFilePointer());
+						i++;
+//						if (i)
 					}
 					else
 					{
@@ -155,5 +164,16 @@ public class Externalsort
 		double rkey = ByteBuffer.wrap(key).getDouble();
 		
 		return new Record(rid, rkey);
+	}
+	
+	/**
+	 * 
+	 */
+	private static void writeToOutput()
+	{
+		for (int i = 0; i < NUM_RECORDS; i++)
+		{
+//			 Record outputRecord = mergeObject.removeSmallest();
+		}
 	}
 }

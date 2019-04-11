@@ -44,8 +44,8 @@ public class MergeSort {
 		else
 		{
 			// only add to merge array if index is smaller than max size
-			if (mergeSize < maxSize)
-			{
+//			if (mergeSize < maxSize)
+//			{
 				Record maxEntry = recordArray[mergeSize-1];
 				System.out.println("This is mergesize: " + mergeSize);
 				if(newEntry.getKey() > maxEntry.getKey())
@@ -59,13 +59,24 @@ public class MergeSort {
 					shiftDown(insertHere);
 					recordArray[insertHere] = newEntry;
 				}
-			}
-			else
-			{
-				
-			}
+//			}
+//			else
+//			{
+//				
+//			}
 		}
 		mergeSize++;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Record removeSmallest()
+	{
+		Record result = recordArray[0];
+		
+		return result;
 	}
 	
 	/**
@@ -115,6 +126,23 @@ public class MergeSort {
 			mergeSize++;
 			recordArray[mergeSize] = holdRecord;
 		}
-		
+	}
+	
+	/**
+	 * 
+	 * @return merge array size
+	 */
+	public int getMergeSize()
+	{
+		return mergeSize;
+	}
+	
+	/**
+	 * 
+	 * @return max size of array
+	 */
+	public int getMaxSize()
+	{
+		return maxSize;
 	}
 }
