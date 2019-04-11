@@ -88,6 +88,7 @@ public class MergeSort {
 	 */
 	private void shiftUp()
 	{
+		// for the length of the array, move entries up one
 		for (int i = 1; i < mergeSize; i++)
 		{
 			recordArray[i-1] = recordArray[i];
@@ -131,10 +132,11 @@ public class MergeSort {
 	 */
 	private void shiftDown(int endIndex)
 	{
+		// save largest entry so its not lost
 		Record holdRecord = recordArray[mergeSize];
 		for (int i = mergeSize; i > endIndex; i--)
 		{
-	        recordArray[i-1] = recordArray[i];	
+	        recordArray[i] = recordArray[i-1];	
 		}
 		// if there is space in the array, add the thing at end back
 		if ((mergeSize + 1) < maxSize)
@@ -144,6 +146,7 @@ public class MergeSort {
 		else
 		{
 			// might be an issue adding removed record back
+			System.out.println("Enters the bad case.");
 		}
 	}
 	
