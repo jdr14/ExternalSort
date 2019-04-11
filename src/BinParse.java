@@ -297,7 +297,7 @@ public class BinParse
 		{
 			return true;
 		}
-		return newRecord.getKey() > latestInOB.getKey();
+		return newRecord.getKey() > latestInOB.getKey();  
 	}
 	
 	/**

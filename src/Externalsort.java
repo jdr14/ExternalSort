@@ -114,16 +114,16 @@ public class Externalsort
 	 * @param pointerList should be the list of file pointers separating runs
 	 * @return total number of blocks as an integer
 	 */
-	private int calculateTotalBlocks(List<Long> pointerList)
+	private int calculateTotalBlocks(List<Long> ptrList)
 	{
 		int totalBlocks = 0;
-		for (int i = 0; i < pointerList.size() - 1; i++)
+		for (int i = 0; i < ptrList.size() - 1; i++)
 		{
 			// Get number of blocks for the current run
-			totalBlocks += (pointerList.get(i + 1) - pointerList.get(i)) 
+			totalBlocks += (ptrList.get(i + 1) - ptrList.get(i)) 
 					/ BLOCK_OFFSET;
 			// Check to see if the run has a partial block as remainder
-			if ((pointerList.get(i + 1) - pointerList.get(i)) % BLOCK_OFFSET 
+			if ((ptrList.get(i + 1) - ptrList.get(i)) % BLOCK_OFFSET 
 					!= 0)
 			{
 				totalBlocks++;
@@ -132,26 +132,45 @@ public class Externalsort
 		return totalBlocks;
 	}
 	
-	private static void createInputBuffers()
+	private static void createInputBuffers(int blockIndex)
 	{
-		for (int i = 0; i < pointerList.length; i++)
+		int runCount = 0;
+		int i = 0;
+		while (i < pointerList.length && i != 8)
+		// for (int i = 0; i < pointerList.length; i++)
 		{
 			byte[] newIB = new byte[(int)BLOCK_OFFSET];
+			byte[] partialIB;
 			
-			int blockSize = nextBlockExists(i);
-			if (nextBlockExists)
+			long blockSize = checkSize(blockIndex);
+			
+			try
 			{
-				
+				if (blockSize > 0 && blockSize <= BLOCK_OFFSET)  // 0 < blockOffset < 8192
+				{
+					partialIB = new byte[(int)blockSize];
+					runFile.read(partialIB);
+					inputBuffers.add(partialIB);
+				}
+				else if (blockSize > BLOCK_OFFSET)
+				{
+					runFile.read(newIB);
+					inputBuffers.add(newIB);
+				}
 			}
-			runFile.read()
-			inputBuffers.add(newIB);
+			catch (IOException err)
+			{
+				System.out.println("IOException exception: " + err.getMessage());
+			}
+			
+			i++;
+			runCount++;
 		}
 	}
 	
-	private int nextBlockExists(int index)
+	private static long checkSize(int index)
 	{
-		
-		pointerList.get(index + 1);
+		return (endOfFile - pointerList[index].getKey());
 	}
 	
 	/**
@@ -160,7 +179,14 @@ public class Externalsort
 	 */
 	private static void beginMerge()
 	{
+		// The current block across all runs
+		int currBlock = 0;
 		
+		// Case where the total number of runs is less than or equal to 8
+		if (pointerList.length <= 8)
+		{
+			createInputBuffers(currBlock);
+		}
 	}
 	
 	/**
