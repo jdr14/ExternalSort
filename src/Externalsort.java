@@ -87,13 +87,129 @@ public class Externalsort
 	
 	/**
 	 * 
+	 * @param pointerList should be the list of file pointers separating runs
+	 * @return total number of blocks as an integer
+	 */
+	private int calculateTotalBlocks(List<Long> pointerList)
+	{
+		int totalBlocks = 0;
+		for (int i = 0; i < pointerList.size() - 1; i++)
+		{
+			// Get number of blocks for the current run
+			totalBlocks += (pointerList.get(i + 1) - pointerList.get(i)) 
+					/ BLOCK_OFFSET;
+			// Check to see if the run has a partial block as remainder
+			if ((pointerList.get(i + 1) - pointerList.get(i)) % BLOCK_OFFSET 
+					!= 0)
+			{
+				totalBlocks++;
+			}
+		}
+		return totalBlocks;
+	}
+	
+	/**
+	 * 
 	 * @param pointerList
 	 */
+	private static void beginMerge(List<Long> pointerList)
+	{
+		try
+		{
+			int beginCurrRun = 0;
+			int beginCurrBlock = 0;
+			int loopCount = 0;
+			
+			long beginRunPointer;
+			long endRunPointer;
+			long lengthCurrRun;
+			long numBlocksInCurrRun;
+			
+			// Iterate through all of the runs
+			while (beginCurrRun < pointerList.size() - 1)
+			{
+				// Get the beginning and end pointers of the current run
+				beginRunPointer = pointerList.get(beginCurrRun);
+				endRunPointer = pointerList.get(beginCurrRun + 1);
+				
+				// Length of the current run = end - beginning
+				lengthCurrRun = (endRunPointer - beginRunPointer);
+				
+				// Number of blocks in current run is the length (in bytes)
+				// of the current run divided by the block size (in bytes)
+				numBlocksInCurrRun = (lengthCurrRun / BLOCK_OFFSET);  
+				
+				// Account for getting the end of block by subtracting 1
+				if (beginCurrBlock < numBlocksInCurrRun - 1)
+				{
+					// Set the starting point before reading input
+					runFile.seek(beginRunPointer + beginCurrBlock);
+					
+					// Read the next block into a temporary byte array 
+					if (runFile.read(INPUTBUFFER) == -1)
+					{
+						return;
+					}
+					
+					// TODO: remove the comment below once the function exists!!!!
+					// blockMergeInsert();
+				}
+				else if (beginCurrBlock == numBlocksInCurrRun - 1)
+				{
+					// Check to see if there is a partial block
+					if (lengthCurrRun % BLOCK_OFFSET != 0)
+					{
+						// Number of bytes (less than the block offset of 8192
+						long remainder = (lengthCurrRun % BLOCK_OFFSET);
+						
+						byte[] temp = new byte[(int)remainder];
+						
+						// Read the partial block into a partial block byte array
+						runFile.read(temp);
+						
+						// TODO: remove the comment below once the function exists!!!!
+						// blockMergeInsert(remainder);
+
+					}
+					else  // If no remainder, parse as one more normal block
+					{
+						// Set the starting point before reading input
+						runFile.seek(beginRunPointer + beginCurrBlock);
+						
+						// TODO: remove the comment below once the function exists!!!!
+						// blockMergeInsert();
+					}
+				}
+				else
+				{
+					// run is finished
+					continue;
+				}
+				
+				if (beginCurrBlock == 7)
+				{
+					// Track # of (sets of 8 blocks) we have merge sorted
+					loopCount++;
+					break;
+				}
+				
+				beginCurrBlock++;
+			}  // end while
+		}  // end try
+		catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			System.err.println("Error in beginMerge: " + e.getMessage());
+		}
+	}
+
+	/*
 	private static void beginMerge(List<Long> pointerList)
 	{
 		try 
 		{
 			int i = 0;
+			
 			while (i < pointerList.size())
 //			for (int i = 0; i < pointerList.size(); i++)
 			{
@@ -144,11 +260,13 @@ public class Externalsort
 					break;
 			}
 		} 
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			System.err.println("Error in beginMerge: " + e.getMessage());
 		}
 	}
+	*/
 	
 	/**
 	 * 
@@ -176,4 +294,5 @@ public class Externalsort
 //			 Record outputRecord = mergeObject.removeSmallest();
 		}
 	}
+	
 }
