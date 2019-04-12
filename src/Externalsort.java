@@ -151,10 +151,10 @@ public class Externalsort
 	 * @param blockIndex
 	 * @param runIndex
 	 */
-	private static void createInputBuffers(int blockIndex, int runIndex)
+	private static Pair<Integer, Integer> createInputBuffers(int blockIndex, int runIndex)
 	{
 		int i = runIndex;
-		while (i < pointerList.length && i != 8)
+		while (i < pointerList.length) // && (i % 8 == 0 && i > 7))
 		// for (int i = 0; i < pointerList.length; i++)
 		{
 			byte[] newIB = new byte[(int)BLOCK_OFFSET];
@@ -194,7 +194,8 @@ public class Externalsort
 			}
             i++;
 		}
-		runIndex += i;  // Make sure run index is updated
+		
+		return new Pair<Integer, Integer>(blockIndex, i);
 	}
 	
 	/**
@@ -222,13 +223,16 @@ public class Externalsort
 		while (!allRunsAtAnEnd())
 		{
 			// Set the run index back to the start run for every iteration
-//			currRunIndex = 0;
+			//currRunIndex = 0;
 			
 			// Case where the total number of runs is less than or equal to 8
 			if (pointerList.length <= 8)
 			{
-				createInputBuffers(currBlock, currRunIndex);
+				Pair<Integer, Integer> p = createInputBuffers(currBlock, currRunIndex);
 				blockMergeInsert();
+				
+				currBlock = p.getKey();
+				currRunIndex = 0;
 			}
 			else
 			{
@@ -237,8 +241,8 @@ public class Externalsort
 					createInputBuffers(currBlock, currRunIndex);
 					blockMergeInsert();
 				}
-				currBlock++;
 			}
+			currBlock++;
 		}
 	}
 	
