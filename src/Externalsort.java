@@ -94,6 +94,8 @@ public class Externalsort
         
         endOfFile = p.getEndFilePtr();
         
+        inputBuffers = new ArrayList<byte[]>();
+        
         // call function that begins merge
         beginMerge();
         
@@ -159,7 +161,8 @@ public class Externalsort
 				if (blockSize > 0 && blockSize <= BLOCK_OFFSET)  
 				{
 					partialIB = new byte[(int)blockSize];
-					if (runFile.read(partialIB) != -1)
+					runFile.read(partialIB);
+					if (partialIB != null)
 					{
 						inputBuffers.add(partialIB);
 					}
@@ -170,7 +173,8 @@ public class Externalsort
 				// Case 2) blockSize > 8192
 				else if (blockSize > BLOCK_OFFSET)
 				{
-					if (runFile.read(newIB) != -1)
+					runFile.read(newIB);
+					if (newIB != null)
 					{
 						inputBuffers.add(newIB);
 					}
@@ -245,16 +249,21 @@ public class Externalsort
 	{
 		// indicates what entry was removed from record array
 		int removed = -1;
+		int size = inputBuffers.size();
+		System.out.println(inputBuffers.size());
 		// records list to hold top records
-		List<Record> recordList = new ArrayList<Record>(inputBuffers.size());
+		List<Record> recordList = new ArrayList<Record>(size);
 		// list of indexes to keep track of where you are in the block
-		List<Integer> indexList = new ArrayList<Integer>(inputBuffers.size());
+		System.out.println(recordList.size());
+		List<Integer> indexList = new ArrayList<Integer>(size);
+		System.out.println(indexList.size());
 		// initialize to 0
 		for (int i = 0; i < indexList.size(); i++)
 		{
-			indexList.add(i, 0);
+			indexList.add(0);
+			System.out.println(indexList.size());
 		}
-		
+		System.out.println(indexList.size());
 		for (int j = 0; j < NUM_RECORDS; j++)
 		{
 			// case where array is empty and top of all blocks are needed
@@ -302,7 +311,7 @@ public class Externalsort
 	
 	private static int removedSmallestRecord(List<Record> currentList)
 	{
-		int result = -1;
+		int result = 0;
 		Record smallest = currentList.get(0);
 		// start at one because biggest is already 0 as set above
 		for (int i = 1; i < currentList.size(); i++)
