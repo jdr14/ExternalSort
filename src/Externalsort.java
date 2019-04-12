@@ -151,10 +151,10 @@ public class Externalsort
 	 * @param blockIndex
 	 * @param runIndex
 	 */
-	private static void createInputBuffers(int blockIndex, int runIndex)
+	private static Pair<Integer, Integer> createInputBuffers(int blockIndex, int runIndex)
 	{
 		int i = runIndex;
-		while (i < pointerList.length && i != 8)
+		while (i < pointerList.length) // && (i % 8 == 0 && i > 7))
 		// for (int i = 0; i < pointerList.length; i++)
 		{
 			byte[] newIB = new byte[(int)BLOCK_OFFSET];
@@ -192,7 +192,8 @@ public class Externalsort
 			}
             i++;
 		}
-		runIndex += i;  // Make sure run index is updated
+		
+		return new Pair<Integer, Integer>(blockIndex, i);
 	}
 	
 	/**
@@ -215,18 +216,21 @@ public class Externalsort
 	{
 		// The current block across all runs
 		int currBlock = 0;
-		int currRunIndex;
+		int currRunIndex = 0;
 		
 		while (!allRunsAtAnEnd())
 		{
 			// Set the run index back to the start run for every iteration
-			currRunIndex = 0;
+			//currRunIndex = 0;
 			
 			// Case where the total number of runs is less than or equal to 8
 			if (pointerList.length <= 8)
 			{
-				createInputBuffers(currBlock, currRunIndex);
+				Pair<Integer, Integer> p = createInputBuffers(currBlock, currRunIndex);
 				blockMergeInsert();
+				
+				currBlock = p.getKey();
+				currRunIndex = 0;
 			}
 			else
 			{
@@ -235,8 +239,8 @@ public class Externalsort
 					createInputBuffers(currBlock, currRunIndex);
 					blockMergeInsert();
 				}
-				currBlock++;
 			}
+			currBlock++;
 		}
 	}
 	
@@ -248,7 +252,7 @@ public class Externalsort
 	{
 		for (int i = 0; i < pointerList.length; i++)
 		{
-			if (pointerList[i].getValue())
+			if (pointerList[i].getValue() == true)
 			{
 				return false;
 			}
@@ -299,7 +303,7 @@ public class Externalsort
 				if ((indexList.get(removed) + 1) < 512)
 				{
 					// update the input buffer changed to the next record
-					indexList.add(removed, (indexList.get(removed)+1));
+					indexList.set(removed, (indexList.get(removed)+1));
 					// get the bytes from the index in the 
 					byte[] id = Arrays.copyOfRange(inputBuffers.get(removed), 
 							indexList.get(removed) * NUM_BYTES_PER_RECORD, 
@@ -311,7 +315,7 @@ public class Externalsort
 				    		(indexList.get(removed) * NUM_BYTES_PER_RECORD) + 
 				    		NUM_BYTES_PER_RECORD);
 				    Record insertThis = bytesToRecord(id, key);
-				    recordList.add(removed, insertThis);
+				    recordList.set(removed, insertThis);
 				}
 			}
 			

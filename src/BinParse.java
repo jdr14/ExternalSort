@@ -52,32 +52,32 @@ public class BinParse
 	/**
 	 * Output stream used to create run file
 	 */
-	File outFile;
+	private File outFile;
 	
 	/**
 	 * String used as the run file name
 	 */
-	String runFileName;
+	private String runFileName;
 	
 	/**
 	 * Uses file to give position in file
 	 */
-	RandomAccessFile runFile;
+	private RandomAccessFile runFile;
 	
 	/**
 	 * Latest record inserted in output buffer
 	 */
-	Record latestInOB;
+	private Record latestInOB;
 	
 	/**
 	 * Latest Record to be inserted into MinHeap
 	 */
-	Record insertToMinHeap;
+	private Record insertToMinHeap;
 	
 	/**
 	 * Heap used throughout program
 	 */
-	MinHeap newHeap;
+	private MinHeap newHeap;
 	
 	/**
 	 * Flag to indicate beginning of run

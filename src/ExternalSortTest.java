@@ -219,6 +219,13 @@ public class ExternalSortTest extends TestCase
 		
 		assertEquals((int) p1.getKey(), 32);
 		assertEquals((boolean) p1.getValue(), false);
+	}
+	
+	/**
+	 * 
+	 */
+	public void testBinParse()
+	{
 		
 	}
 }
