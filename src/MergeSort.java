@@ -47,7 +47,7 @@ public class MergeSort {
 		else   // else figure out where the record goes
 		{
 			// take the largest entry currently in the array
-			Record maxEntry = recordArray[mergeSize-1];
+			Record maxEntry = recordArray[mergeSize - 1];
 			
 			// if the max entry is smaller than new entry
 			// add new entry to end of array

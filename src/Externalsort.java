@@ -53,7 +53,7 @@ public class Externalsort
 	/**
 	 * 
 	 */
-	private static List<byte[]> inputBuffers;
+	private static List<byte[]> inputBuffers = new ArrayList<byte[]>();
 	
 	/**
 	 * 
@@ -87,6 +87,16 @@ public class Externalsort
         mergeObject = p.parse(args[0]);
         // set run file object
         runFile = p.getRunFile();
+        
+        try
+        {
+            runFile = new RandomAccessFile(new File(p.getRunFileName()), "rw");        	
+        }
+		catch (IOException err)
+		{
+			System.out.println("IOException exception: " + err.getMessage());
+		}
+        
         INPUTBUFFER = p.getInput();
         OUTPUTBUFFER = p.getOutput();
         pointerList = new Pair[p.getPointerList().size()];
@@ -218,6 +228,15 @@ public class Externalsort
 				createInputBuffers(currBlock, currRunIndex);
 				blockMergeInsert();
 			}
+			else
+			{
+				while (currRunIndex < pointerList.length)
+				{
+					createInputBuffers(currBlock, currRunIndex);
+					blockMergeInsert();
+				}
+				currBlock++;
+			}
 		}
 	}
 	
@@ -246,11 +265,12 @@ public class Externalsort
 		// indicates what entry was removed from record array
 		int removed = -1;
 		// records list to hold top records
-		List<Record> recordList = new ArrayList<Record>(inputBuffers.size());
+		ArrayList<Record> recordList = new ArrayList<Record>(inputBuffers.size());
 		// list of indexes to keep track of where you are in the block
-		List<Integer> indexList = new ArrayList<Integer>(inputBuffers.size());
+		ArrayList<Integer> indexList = new ArrayList<Integer>(inputBuffers.size());
 		// initialize to 0
-		for (int i = 0; i < indexList.size(); i++)
+		
+		for (int i = 0; i < inputBuffers.size(); i++)
 		{
 			indexList.add(i, 0);
 		}
@@ -274,8 +294,9 @@ public class Externalsort
 				}
 			}
 			else
-			{    // get the record from the block that got removed
-				if ((indexList.get(removed)+1) < 512)
+			{    
+				// get the record from the block that got removed
+				if ((indexList.get(removed) + 1) < 512)
 				{
 					// update the input buffer changed to the next record
 					indexList.add(removed, (indexList.get(removed)+1));
@@ -302,7 +323,7 @@ public class Externalsort
 	
 	private static int removedSmallestRecord(List<Record> currentList)
 	{
-		int result = -1;
+		int result = 0;
 		Record smallest = currentList.get(0);
 		// start at one because biggest is already 0 as set above
 		for (int i = 1; i < currentList.size(); i++)

@@ -368,6 +368,15 @@ public class BinParse
 	{
 		return runFile;
 	}
+	
+	/**
+	 * 
+	 * @return runFileName as string
+	 */
+	public String getRunFileName()
+	{
+		return runFileName;
+	}
     
 	/**
 	 * 
