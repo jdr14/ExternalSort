@@ -169,7 +169,8 @@ public class Externalsort
 				if (blockSize > 0 && blockSize <= BLOCK_OFFSET)  
 				{
 					partialIB = new byte[(int)blockSize];
-					if (runFile.read(partialIB) != -1)
+					runFile.read(partialIB);
+					if (partialIB != null)
 					{
 						inputBuffers.add(partialIB);
 					}
@@ -180,7 +181,8 @@ public class Externalsort
 				// Case 2) blockSize > 8192
 				else if (blockSize > BLOCK_OFFSET)
 				{
-					if (runFile.read(newIB) != -1)
+					runFile.read(newIB);
+					if (newIB != null)
 					{
 						inputBuffers.add(newIB);
 					}
@@ -268,6 +270,8 @@ public class Externalsort
 	{
 		// indicates what entry was removed from record array
 		int removed = -1;
+		int size = inputBuffers.size();
+		System.out.println(inputBuffers.size());
 		// records list to hold top records
 		ArrayList<Record> recordList = new ArrayList<Record>(inputBuffers.size());
 		// list of indexes to keep track of where you are in the block
@@ -276,9 +280,10 @@ public class Externalsort
 		
 		for (int i = 0; i < inputBuffers.size(); i++)
 		{
-			indexList.add(i, 0);
+			indexList.add(0);
+			System.out.println(indexList.size());
 		}
-		
+		System.out.println(indexList.size());
 		for (int j = 0; j < NUM_RECORDS; j++)
 		{
 			// case where array is empty and top of all blocks are needed
